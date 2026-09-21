@@ -118,7 +118,7 @@ def head(title, desc, path, img=None, extra=""):
 <style>{CSS}</style>
 {extra}</head>
 <body>
-<header><div class="wrap"><a class="logo" href="{BASE_URL}">🎃 Odd-jack Art</a><nav><a href="{BASE_URL}halloween/">Halloween</a><a href="{BASE_URL}cat-wallpapers/">Wallpapers</a><a href="{BASE_URL}printable-wall-art/">Prints</a><a href="{SHOP_URL}" rel="noopener">Ko-fi Shop</a></nav></div></header>
+<header><div class="wrap"><a class="logo" href="{BASE_URL}">🎃 Odd-jack Art</a><nav><a href="{BASE_URL}halloween/">Halloween</a><a href="{BASE_URL}cat-wallpapers/">Wallpapers</a><a href="{BASE_URL}printable-wall-art/">Prints</a><a href="{BASE_URL}niches/">Niches</a><a href="{SHOP_URL}" rel="noopener">Ko-fi Shop</a></nav></div></header>
 """
 
 FOOTER = f"""<footer><div class="wrap">
@@ -205,6 +205,11 @@ def homepage():
 <a class="catcard" href="{BASE_URL}printable-wall-art/"><h3>🖼️ Printable Wall Art</h3><p>High-res cat art ready to print, frame &amp; hang.</p></a>
 <a class="catcard" href="{BASE_URL}sticker-art/"><h3>✨ Sticker Art</h3><p>Kawaii cat designs made for sticker printing.</p></a>
 </div>
+<h2>New: shop by niche</h2>
+<div class="cats">
+{niche_home_cards_html()}
+<a class="catcard" href="{BASE_URL}niches/"><h3>🧭 All 12 collections</h3><p>Browse every niche — Halloween cats, apparel niches &amp; digital products.</p></a>
+</div>
 <h2>About Odd-jack</h2>
 <p>Odd art by Odd Jack O.M.T. — cute kawaii cats, elemental kitties, psychedelic art &amp; spooky Halloween drops. Every design is an instant digital download: buy once on Ko-fi and use it as your phone wallpaper, print it for your walls, or turn it into stickers. New designs drop weekly.</p>
 <h2>All 70 Halloween designs</h2>
@@ -225,6 +230,235 @@ def category_page(path, h1, title, desc, intro_paras, items):
 </main>"""
     return head(title, desc, path, items[0]["img"] if items else None) + body + FOOTER
 
+# ---------------- niche expansion ----------------
+RB_SHOP = "https://www.redbubble.com/people/Odd-jack/shop"
+KOFI_HOME = "https://ko-fi.com/oddjack"
+EXP_SRC = os.path.expanduser("~/workspace/goals/multiply-income-streams/niche-expansion/designs")
+MAX_WEB_PX = 1400  # longest side for web images
+
+NICHES = [
+    {"folder": "rb-trades-pride", "slug": "trades-pride", "name": "Blue-Collar Trades Pride",
+     "emoji": "🔧", "shop": "redbubble",
+     "tagline": "Vintage badge graphics for the trades: diesel techs, welders, electricians, linemen & plumbers.",
+     "seo": "Blue-collar trades pride apparel: diesel mechanic, welder, electrician, lineman & plumber badge tees, hoodies & stickers by Odd-jack.",
+     "intros": ["Grease under the nails, pride on the chest. This collection turns each trade into a vintage badge graphic — crossed pistons for diesel techs, gear-and-spark emblems for welders, high-voltage attitude for electricians and linemen, and flow-state pride for plumbers.",
+                "These designs are headed to the Odd-jack Redbubble shop as tees, hoodies, and hard-hat-ready stickers. Browse the full badge set below — new trades are dropping soon."]},
+    {"folder": "rb-faith-apparel", "slug": "faith-apparel", "name": "Christian / Faith Apparel",
+     "emoji": "✝️", "shop": "redbubble",
+     "tagline": "Bold faith graphics — streetwear, varsity & boutique styles with crosses, sunsets & scripture vibes.",
+     "seo": "Christian faith apparel: bold streetwear crosses, varsity faith tees & minimalist boutique designs by Odd-jack.",
+     "intros": ["Wear your faith loud or keep it minimal — this collection covers both. Gritty streetwear graphics with glowing crosses and collegiate lettering, plus clean boutique pieces with mountain silhouettes and sunrise olive branches.",
+                "These designs are headed to the Odd-jack Redbubble shop as tees and hoodies. Browse the styles below and find the one that speaks to your walk."]},
+    {"folder": "rb-fishing-humor", "slug": "fishing-humor", "name": "Bass Fishing / Angler Humor",
+     "emoji": "🎣", "shop": "redbubble",
+     "tagline": "Sarcastic angler humor tees & decals for bass fishermen and their long-suffering families.",
+     "seo": "Funny bass fishing shirts & angler humor decals: grumpy bass badges, retro dad fishing tees & pun graphics by Odd-jack.",
+     "intros": ["Cranky by nature, born to fish. This collection is for the angler who fishes best before coffee — grumpy bass badges, retro 70s dad-fishing sunsets, night-bite moonlit scenes, and puns that belong on a boat ramp.",
+                "These designs are headed to the Odd-jack Redbubble shop as tees, hoodies, and stickers. Perfect gifts for the fisherman in your life (or yourself)."]},
+    {"folder": "rb-bookish-identity", "slug": "bookish", "name": "Bookish / BookTok Reader Identity",
+     "emoji": "📚", "shop": "redbubble",
+     "tagline": "Reader-identity tees for the TBR-pile guilty, romantasy girlies & smutty book clubs.",
+     "seo": "Bookish reader tees: TBR pile humor, romantasy dragon art & smutty book club shirts for BookTok readers by Odd-jack.",
+     "intros": ["One more chapter — that's the whole personality. This collection is reader-identity apparel for BookTok: towering TBR piles, gothic romantasy dragons, 2AM library clocks, and varsity-lettered book club eras.",
+                "These designs are headed to the Odd-jack Redbubble shop as tees, hoodies, and laptop stickers. Your next book-club uniform is below."]},
+    {"folder": "rb-america-250", "slug": "america-250", "name": "America 250th / Patriotic",
+     "emoji": "🇺🇸", "shop": "redbubble",
+     "tagline": "1776–2026 semiquincentennial badges: eagles, flags & liberty bells in cracked-ink vintage.",
+     "seo": "America 250th patriotic apparel: 1776-2026 eagle, flag & liberty bell vintage badges for the semiquincentennial by Odd-jack.",
+     "intros": ["250 years of freedom, 1776–2026. This collection marks America's semiquincentennial with cracked-ink heritage badges — bold eagles over worn flags, the Liberty Bell, and WE THE PEOPLE in constitutional lettering.",
+                "These designs are headed to the Odd-jack Redbubble shop as tees, hoodies, and stickers. Proud statement pieces for the 4th of July, Veterans Day, and year-round patriotism."]},
+    {"folder": "kf-planner-bundles", "slug": "planner-bundles", "name": "Printable Planner Bundles",
+     "emoji": "🗓️", "shop": "kofi",
+     "tagline": "Printable planners: ADHD focus, fitness, wedding, reading journals & creator finance.",
+     "seo": "Printable planner bundles: ADHD focus planner, fitness & wellness, wedding planner, reading journal & creator finance by Odd-jack.",
+     "intros": ["Print once, use forever. This collection of printable planner bundles is built for real life — ADHD-friendly daily focus spreads with time-blocking and dopamine menus, fitness and wellness logs, a full wedding planning system, a cozy reading journal, and a finance bundle for content creators.",
+                "These bundles are headed to the Odd-jack Ko-fi shop as instant-download printable PDFs (US Letter & A4). Preview the covers and sample pages below."]},
+    {"folder": "kf-canva-kits", "slug": "canva-kits", "name": "Canva Social-Media Template Kits",
+     "emoji": "🎨", "shop": "kofi",
+     "tagline": "Plug-and-play social templates: Pinterest growth kits, reel covers, carousels & brand kits.",
+     "seo": "Canva social media template kits: Pinterest growth kits, reel covers, quote carousels, story engagement & small-biz brand kits by Odd-jack.",
+     "intros": ["Stop designing from a blank page. These social-media template kits give creators scroll-stopping starting points — dark-academia Pinterest pin templates, viral-style reel covers, elegant quote carousels, story engagement stickers, and a full small-biz brand kit with logos, colors, and type.",
+                "These kits are headed to the Odd-jack Ko-fi shop as instant downloads. Preview the kit covers and sample templates below."]},
+    {"folder": "kf-notion-systems", "slug": "notion-systems", "name": "Notion Productivity Systems",
+     "emoji": "🧠", "shop": "kofi",
+     "tagline": "Notion dashboards & templates for creators, freelancers, students & goal-getters.",
+     "seo": "Notion productivity templates: creator content OS, freelancer finance HQ, habit & goal tracker, project command & student second-brain by Odd-jack.",
+     "intros": ["One calm dashboard for everything. These Notion productivity systems turn scattered docs into operating systems — a creator content pipeline, a freelancer money dashboard, a habit and goal tracker, a project command center, and a study dashboard for students.",
+                "These systems are headed to the Odd-jack Ko-fi shop as instant-download Notion templates. Preview the dashboard mockups below."]},
+]
+
+
+def load_expansion():
+    items = []
+    for n in NICHES:
+        ndir = os.path.join(EXP_SRC, n["folder"])
+        if not os.path.isdir(ndir):
+            print(f"WARN: niche folder missing: {ndir}")
+            continue
+        for slug in sorted(os.listdir(ndir)):
+            idir = os.path.join(ndir, slug)
+            mf = os.path.join(idir, "metadata.json")
+            if not os.path.isfile(mf):
+                continue
+            m = json.load(open(mf))
+            cover_src = os.path.join(idir, m["variants"][0]["file"])
+            if not os.path.isfile(cover_src):
+                print(f"WARN: cover missing for {slug}")
+                continue
+            items.append({"niche": n, "slug": slug, "title": m["title"],
+                          "description": m["description"], "tags": m.get("tags", []),
+                          "price": m.get("price"), "cover_src": cover_src,
+                          "img": None})
+    return items
+
+
+def web_copy_image(item):
+    """Resize master/cover to a web-sane JPEG copy in OUT/images. Masters untouched.
+    Transparent artwork is composited onto white (site background is white anyway)."""
+    from PIL import Image
+    dest_name = f"niche-{item['niche']['slug']}-{item['slug']}-web.jpg"
+    dest = os.path.join(OUT, "images", dest_name)
+    if os.path.isfile(dest) and os.path.getmtime(dest) >= os.path.getmtime(item["cover_src"]):
+        item["img"] = dest_name
+        return dest_name
+    im = Image.open(item["cover_src"])
+    if max(im.size) > MAX_WEB_PX:
+        im = im.resize((int(im.width * MAX_WEB_PX / max(im.size)),
+                        int(im.height * MAX_WEB_PX / max(im.size))), Image.LANCZOS)
+    if im.mode in ("RGBA", "LA"):
+        bg = Image.new("RGB", im.size, (255, 255, 255))
+        bg.paste(im, mask=im.split()[-1])
+        im = bg
+    elif im.mode != "RGB":
+        im = im.convert("RGB")
+    im.save(dest, "JPEG", quality=82, optimize=True)
+    item["img"] = dest_name
+    return dest_name
+
+
+def niche_card(item):
+    pdir = f"niches/{item['niche']['slug']}/{item['slug']}/"
+    price_html = pfmt(item["price"]) if item["price"] else "Coming soon"
+    return (f'<a class="card" href="{BASE_URL}{pdir}">'
+            f'<img src="{BASE_URL}images/{item["img"]}" alt="{esc(item["title"])}" loading="lazy">'
+            f'<div class="t">{esc(item["title"])}</div><div class="p">{price_html}</div></a>')
+
+
+def expansion_product_page(item, all_items):
+    n = item["niche"]
+    pdir = f"niches/{n['slug']}/{item['slug']}/"
+    is_rb = n["shop"] == "redbubble"
+    shop_url = RB_SHOP if is_rb else KOFI_HOME
+    shop_name = "Redbubble" if is_rb else "Ko-fi"
+    btn_label = "Browse the Redbubble shop" if is_rb else "Browse the Ko-fi shop"
+    price_html = (f'<p class="price">{pfmt(item["price"])} <span style="font-size:.9rem;color:#666;font-weight:400">USD · instant download</span></p>'
+                  if item["price"] else '<p class="price">Coming soon</p>')
+    ticks = (["Original apparel-ready graphic by Odd Jack O.M.T.",
+              "Look for it on tees, hoodies & stickers",
+              "New drops land regularly — follow the shop"] if is_rb else
+             ["Instant digital download on release",
+              "Original art & templates by Odd Jack O.M.T.",
+              "New drops land regularly — follow the shop"])
+    tick_html = "".join(f"<li>{t}</li>" for t in ticks)
+    tags_html = (f'<p style="font-size:.85rem;color:#666">Tags: {esc(", ".join(item["tags"][:12]))}</p>'
+                 if item["tags"] else "")
+    same = [x for x in all_items if x["niche"] == n and x is not item][:4]
+    rel_html = "".join(niche_card(r) for r in same)
+    body = f"""<main class="wrap">
+<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}niches/">Shop by Niche</a> › <a href="{BASE_URL}niches/{n['slug']}/">{esc(n['name'])}</a> › {esc(item['title'])}</p>
+<div class="product">
+<div><img src="{BASE_URL}images/{item['img']}" alt="{esc(item['title'])}"></div>
+<div>
+<h1>{esc(item['title'])}</h1>
+{price_html}
+<p><a class="btn" href="{esc(shop_url)}" rel="noopener">{btn_label}</a></p>
+<p style="font-size:.9rem;color:#666">🚧 Coming soon to the shop — this design isn't listed yet. Follow the {shop_name} shop so you don't miss the drop.</p>
+<ul class="tick">{tick_html}</ul>
+<p>{esc(item['description'])}</p>
+{tags_html}
+</div>
+</div>
+<h2>More in {esc(n['name'])}</h2>
+<div class="grid">{rel_html}</div>
+</main>"""
+    ld_data = {"@context": "https://schema.org", "@type": "Product", "name": item["title"],
+               "image": BASE_URL + "images/" + item["img"],
+               "description": meta_desc(item["description"]),
+               "brand": {"@type": "Brand", "name": "Odd-jack"}}
+    if item["price"]:
+        ld_data["offers"] = {"@type": "Offer", "priceCurrency": "USD", "price": str(item["price"]),
+                             "availability": "https://schema.org/InStock", "url": shop_url}
+    ld = '<script type="application/ld+json">\n' + json.dumps(ld_data, indent=2) + "\n</script>"
+    return head(f"{item['title']} — {n['name']} | Odd-jack", meta_desc(item["description"]),
+                pdir, item["img"], ld) + body + FOOTER
+
+
+def niche_landing_page(n, items):
+    pdir = f"niches/{n['slug']}/"
+    grid = "".join(niche_card(it) for it in items)
+    intro = "".join(f"<p>{p}</p>" for p in n["intros"])
+    body = f"""<main class="wrap">
+<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}niches/">Shop by Niche</a> › {esc(n['name'])}</p>
+<h1>{n['emoji']} {esc(n['name'])}</h1>
+{intro}
+<div class="grid">{grid}</div>
+<p><a class="btn" href="{RB_SHOP if n['shop'] == 'redbubble' else KOFI_HOME}" rel="noopener">Browse the shop</a> <a class="btn alt" style="color:#5b2a86;border-color:#5b2a86" href="{BASE_URL}niches/">All niches</a></p>
+</main>"""
+    return head(f"{n['name']} — {n['tagline']} | Odd-jack", n["seo"], pdir,
+                items[0]["img"] if items else None) + body + FOOTER
+
+
+def niches_hub_page():
+    existing = [
+        ("halloween/", "🎃", "Halloween Cats", "70 spooky-cute kitty designs as $3.50 instant downloads.", "70 designs"),
+        ("cat-wallpapers/", "📱", "Wallpapers", "Vertical kawaii cat phone wallpapers.", "70 designs"),
+        ("printable-wall-art/", "🖼️", "Prints", "High-res cat art ready to print & frame.", "70 designs"),
+        ("sticker-art/", "✨", "Sticker Packs", "Kawaii cat designs made for sticker printing.", "70+ designs"),
+    ]
+    cards = []
+    for n in NICHES:
+        count = len([i for i in EXP_ITEMS if i["niche"] is n])
+        cards.append(f'<a class="catcard" href="{BASE_URL}niches/{n["slug"]}/"><h3>{n["emoji"]} {esc(n["name"])}</h3>'
+                     f'<p>{esc(n["tagline"])}</p><p style="font-size:.8rem;color:#ff6b35;font-weight:700">{count} designs · coming soon</p></a>')
+    for path, emoji, name, tag, count in existing:
+        cards.append(f'<a class="catcard" href="{BASE_URL}{path}"><h3>{emoji} {esc(name)}</h3>'
+                     f'<p>{esc(tag)}</p><p style="font-size:.8rem;color:#ff6b35;font-weight:700">{count}</p></a>')
+    body = f"""<div class="hero"><div class="wrap">
+<h1>Shop by Niche</h1>
+<p>Every Odd-jack collection in one place — spooky Halloween cats, blue-collar pride, faith apparel, angler humor, bookish tees, patriotic badges &amp; digital downloads.</p>
+</div></div>
+<main class="wrap">
+<div class="cats">{"".join(cards)}</div>
+</main>"""
+    desc = "Shop every Odd-jack collection by niche: Halloween cats, trades pride, faith apparel, fishing humor, bookish tees, America 250th, planners, templates & Notion systems."
+    return head("Shop by Niche — All Odd-jack Collections", desc, "niches/",
+                EXP_ITEMS[0]["img"] if EXP_ITEMS else None) + body + FOOTER
+
+
+def niche_home_cards_html():
+    cards = []
+    for n in NICHES:
+        count = len([i for i in EXP_ITEMS if i["niche"] is n])
+        cards.append(f'<a class="catcard" href="{BASE_URL}niches/{n["slug"]}/"><h3>{n["emoji"]} {esc(n["name"])}</h3>'
+                     f'<p>{esc(n["tagline"])}</p><p style="font-size:.8rem;color:#ff6b35;font-weight:700">{count} designs · coming soon</p></a>')
+    return "".join(cards)
+
+
+def build_expansion(pages):
+    """Write niche hub, niche landings, and item pages. Appends to pages list.
+    Requires EXP_ITEMS loaded and web images copied (done in main())."""
+    write("niches/index.html", niches_hub_page()); pages.append(("niches/", "0.9"))
+    for n in NICHES:
+        items = [i for i in EXP_ITEMS if i["niche"] is n]
+        pdir = f"niches/{n['slug']}/"
+        write(pdir + "index.html", niche_landing_page(n, items)); pages.append((pdir, "0.8"))
+        for it in items:
+            ipdir = f"niches/{n['slug']}/{it['slug']}/"
+            write(ipdir + "index.html", expansion_product_page(it, EXP_ITEMS))
+            pages.append((ipdir, "0.7"))
+    print(f"Expansion: {len(EXP_ITEMS)} items across {len(NICHES)} niches")
+
+EXP_ITEMS = []
 # ---------------- build ----------------
 ITEMS = load_manifests()
 
@@ -235,8 +469,9 @@ def write(path, content):
         f.write(content)
 
 def main():
-    global ITEMS
+    global ITEMS, EXP_ITEMS
     ITEMS = load_manifests()
+    EXP_ITEMS = load_expansion()
     os.makedirs(f"{OUT}/images", exist_ok=True)
     # copy images
     missing = []
@@ -253,6 +488,8 @@ def main():
             missing.append(p["img"])
     if missing:
         print("MISSING IMAGES:", missing)
+    for it in EXP_ITEMS:
+        web_copy_image(it)
 
     pages = []  # (path, priority)
     write("index.html", homepage()); pages.append(("", "1.0"))
@@ -292,6 +529,9 @@ def main():
     for path, h1, title, desc, paras, items in cats:
         write(path + "index.html", category_page(path, h1, title, desc, paras, items))
         pages.append((path, "0.9"))
+
+    # niche expansion: hub, niche landings, item pages
+    build_expansion(pages)
 
     # sitemap
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
