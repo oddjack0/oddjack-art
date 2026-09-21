@@ -6,7 +6,7 @@ BASE_URL = "https://oddjack0.github.io/oddjack-art/"
 SHOP_URL = "https://ko-fi.com/oddjack/shop"
 SRC = os.path.expanduser("~/workspace/kofi-challenge")
 OUT = os.path.dirname(os.path.abspath(__file__))
-TODAY = "2026-09-17"
+TODAY = "2026-09-21"
 
 # ---------------- data ----------------
 def load_manifests():
@@ -288,6 +288,24 @@ NICHES = [
 ]
 
 
+def cover_for(idir, slug, m):
+    """Find the cover image for an item, handling both metadata schemas:
+    rb-style dict variants (variants[0]["file"]) and kf-style string variants
+    (cover file is <slug>-cover.png)."""
+    variants = m.get("variants") or []
+    if variants and isinstance(variants[0], dict) and variants[0].get("file"):
+        cand = os.path.join(idir, variants[0]["file"])
+        if os.path.isfile(cand):
+            return cand
+    exact = os.path.join(idir, f"{slug}-cover.png")
+    if os.path.isfile(exact):
+        return exact
+    for f in sorted(os.listdir(idir)):
+        if f.endswith(("-cover.png", "-cover.jpg")) and os.path.isfile(os.path.join(idir, f)):
+            return os.path.join(idir, f)
+    return None
+
+
 def load_expansion():
     items = []
     for n in NICHES:
@@ -301,13 +319,16 @@ def load_expansion():
             if not os.path.isfile(mf):
                 continue
             m = json.load(open(mf))
-            cover_src = os.path.join(idir, m["variants"][0]["file"])
-            if not os.path.isfile(cover_src):
+            cover_src = cover_for(idir, slug, m)
+            if not cover_src:
                 print(f"WARN: cover missing for {slug}")
                 continue
             items.append({"niche": n, "slug": slug, "title": m["title"],
                           "description": m["description"], "tags": m.get("tags", []),
                           "price": m.get("price"), "cover_src": cover_src,
+                          "format": m.get("format"), "page_count": m.get("page_count"),
+                          "template_count": m.get("template_count"),
+                          "resolution": m.get("resolution"), "note": m.get("note"),
                           "img": None})
     return items
 
@@ -351,14 +372,31 @@ def expansion_product_page(item, all_items):
     shop_url = RB_SHOP if is_rb else KOFI_HOME
     shop_name = "Redbubble" if is_rb else "Ko-fi"
     btn_label = "Browse the Redbubble shop" if is_rb else "Browse the Ko-fi shop"
+    listed = item["price"] is not None
     price_html = (f'<p class="price">{pfmt(item["price"])} <span style="font-size:.9rem;color:#666;font-weight:400">USD · instant download</span></p>'
-                  if item["price"] else '<p class="price">Coming soon</p>')
-    ticks = (["Original apparel-ready graphic by Odd Jack O.M.T.",
-              "Look for it on tees, hoodies & stickers",
-              "New drops land regularly — follow the shop"] if is_rb else
-             ["Instant digital download on release",
-              "Original art & templates by Odd Jack O.M.T.",
-              "New drops land regularly — follow the shop"])
+                  if listed else '<p class="price">Coming soon</p>')
+    soon_html = (f'<p style="font-size:.9rem;color:#666">🚧 Coming soon to the shop — this design isn\'t listed yet. Follow the {shop_name} shop so you don\'t miss the drop.</p>'
+                 if not listed else "")
+    specs = [b for b in (item.get("format"),
+                         f"{item['page_count']} pages" if item.get("page_count") else None,
+                         f"{item['template_count']} templates" if item.get("template_count") else None,
+                         item.get("resolution")) if b]
+    specs_html = (f'<p style="font-size:.9rem;color:#555">Includes: {esc(" · ".join(specs))}</p>'
+                  if listed and specs else "")
+    note_html = (f'<p style="font-size:.9rem;color:#555">{esc(item["note"])}</p>'
+                 if listed and item.get("note") else "")
+    if is_rb:
+        ticks = ["Original apparel-ready graphic by Odd Jack O.M.T.",
+                 "Look for it on tees, hoodies & stickers",
+                 "New drops land regularly — follow the shop"]
+    elif listed:
+        ticks = ["Instant digital download on Ko-fi",
+                 "Original art & templates by Odd Jack O.M.T.",
+                 "Personal use only"]
+    else:
+        ticks = ["Instant digital download on release",
+                 "Original art & templates by Odd Jack O.M.T.",
+                 "New drops land regularly — follow the shop"]
     tick_html = "".join(f"<li>{t}</li>" for t in ticks)
     tags_html = (f'<p style="font-size:.85rem;color:#666">Tags: {esc(", ".join(item["tags"][:12]))}</p>'
                  if item["tags"] else "")
@@ -372,7 +410,9 @@ def expansion_product_page(item, all_items):
 <h1>{esc(item['title'])}</h1>
 {price_html}
 <p><a class="btn" href="{esc(shop_url)}" rel="noopener">{btn_label}</a></p>
-<p style="font-size:.9rem;color:#666">🚧 Coming soon to the shop — this design isn't listed yet. Follow the {shop_name} shop so you don't miss the drop.</p>
+{soon_html}
+{specs_html}
+{note_html}
 <ul class="tick">{tick_html}</ul>
 <p>{esc(item['description'])}</p>
 {tags_html}
@@ -408,6 +448,17 @@ def niche_landing_page(n, items):
                 items[0]["img"] if items else None) + body + FOOTER
 
 
+def niche_count_line(n):
+    items = [i for i in EXP_ITEMS if i["niche"] is n]
+    count = len(items)
+    priced = sum(1 for i in items if i["price"])
+    if count and priced == count:
+        return f"{count} designs"
+    if priced:
+        return f"{count} designs · more coming soon"
+    return f"{count} designs · coming soon"
+
+
 def niches_hub_page():
     existing = [
         ("halloween/", "🎃", "Halloween Cats", "70 spooky-cute kitty designs as $3.50 instant downloads.", "70 designs"),
@@ -417,9 +468,9 @@ def niches_hub_page():
     ]
     cards = []
     for n in NICHES:
-        count = len([i for i in EXP_ITEMS if i["niche"] is n])
+        count = niche_count_line(n)
         cards.append(f'<a class="catcard" href="{BASE_URL}niches/{n["slug"]}/"><h3>{n["emoji"]} {esc(n["name"])}</h3>'
-                     f'<p>{esc(n["tagline"])}</p><p style="font-size:.8rem;color:#ff6b35;font-weight:700">{count} designs · coming soon</p></a>')
+                     f'<p>{esc(n["tagline"])}</p><p style="font-size:.8rem;color:#ff6b35;font-weight:700">{count}</p></a>')
     for path, emoji, name, tag, count in existing:
         cards.append(f'<a class="catcard" href="{BASE_URL}{path}"><h3>{emoji} {esc(name)}</h3>'
                      f'<p>{esc(tag)}</p><p style="font-size:.8rem;color:#ff6b35;font-weight:700">{count}</p></a>')
@@ -438,9 +489,9 @@ def niches_hub_page():
 def niche_home_cards_html():
     cards = []
     for n in NICHES:
-        count = len([i for i in EXP_ITEMS if i["niche"] is n])
+        count = niche_count_line(n)
         cards.append(f'<a class="catcard" href="{BASE_URL}niches/{n["slug"]}/"><h3>{n["emoji"]} {esc(n["name"])}</h3>'
-                     f'<p>{esc(n["tagline"])}</p><p style="font-size:.8rem;color:#ff6b35;font-weight:700">{count} designs · coming soon</p></a>')
+                     f'<p>{esc(n["tagline"])}</p><p style="font-size:.8rem;color:#ff6b35;font-weight:700">{count}</p></a>')
     return "".join(cards)
 
 
