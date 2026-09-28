@@ -6,7 +6,7 @@ BASE_URL = "https://oddjack0.github.io/oddjack-art/"
 SHOP_URL = "https://ko-fi.com/oddjack/shop"
 SRC = os.path.expanduser("~/workspace/kofi-challenge")
 OUT = os.path.dirname(os.path.abspath(__file__))
-TODAY = "2026-09-21"
+TODAY = "2026-09-28"
 
 # ---------------- data ----------------
 def load_manifests():
@@ -118,7 +118,7 @@ def head(title, desc, path, img=None, extra=""):
 <style>{CSS}</style>
 {extra}</head>
 <body>
-<header><div class="wrap"><a class="logo" href="{BASE_URL}">🎃 Odd-jack Art</a><nav><a href="{BASE_URL}halloween/">Halloween</a><a href="{BASE_URL}cat-wallpapers/">Wallpapers</a><a href="{BASE_URL}printable-wall-art/">Prints</a><a href="{BASE_URL}niches/">Niches</a><a href="{SHOP_URL}" rel="noopener">Ko-fi Shop</a></nav></div></header>
+<header><div class="wrap"><a class="logo" href="{BASE_URL}">🎃 Odd-jack Art</a><nav><a href="{BASE_URL}halloween/">Halloween</a><a href="{BASE_URL}cat-wallpapers/">Wallpapers</a><a href="{BASE_URL}printable-wall-art/">Prints</a><a href="{BASE_URL}niches/">Niches</a><a href="{BASE_URL}daily/">Daily Drops</a><a href="{SHOP_URL}" rel="noopener">Ko-fi Shop</a></nav></div></header>
 """
 
 FOOTER = f"""<footer><div class="wrap">
@@ -209,6 +209,7 @@ def homepage():
 <div class="cats">
 {niche_home_cards_html()}
 <a class="catcard" href="{BASE_URL}niches/"><h3>🧭 All 12 collections</h3><p>Browse every niche — Halloween cats, apparel niches &amp; digital products.</p></a>
+<a class="catcard" href="{BASE_URL}daily/"><h3>📅 Daily Drops</h3><p>Three fresh designs a day — cute animals, Halloween chaos &amp; seasonal kitties, on Redbubble &amp; Ko-fi.</p></a>
 </div>
 <h2>About Odd-jack</h2>
 <p>Odd art by Odd Jack O.M.T. — cute kawaii cats, elemental kitties, psychedelic art &amp; spooky Halloween drops. Every design is an instant digital download: buy once on Ko-fi and use it as your phone wallpaper, print it for your walls, or turn it into stickers. New designs drop weekly.</p>
@@ -233,6 +234,50 @@ def category_page(path, h1, title, desc, intro_paras, items):
 # ---------------- niche expansion ----------------
 RB_SHOP = "https://www.redbubble.com/people/Odd-jack/shop"
 KOFI_HOME = "https://ko-fi.com/oddjack"
+# Direct Redbubble listing URLs, keyed (niche folder, design slug).
+# Source: niche-expansion/PUBLISHING-LOG.md (all 40 live as of 2026-09-21).
+RB_URLS = {
+    ("rb-trades-pride", "lineman"): "https://www.redbubble.com/shop/ap/184064854",
+    ("rb-trades-pride", "electrician"): "https://www.redbubble.com/shop/ap/184064934",
+    ("rb-trades-pride", "plumber"): "https://www.redbubble.com/shop/ap/184064998",
+    ("rb-trades-pride", "welder"): "https://www.redbubble.com/shop/ap/184065063",
+    ("rb-trades-pride", "diesel-mechanic"): "https://www.redbubble.com/shop/ap/184065127",
+    ("rb-trades-pride", "hvac-cool-under-pressure"): "https://www.redbubble.com/shop/ap/184069606",
+    ("rb-trades-pride", "carpenter-measure-twice"): "https://www.redbubble.com/shop/ap/184069660",
+    ("rb-trades-pride", "ironworker-sky-high-steel"): "https://www.redbubble.com/shop/ap/184069713",
+    ("rb-faith-apparel", "boutique-minimal"): "https://www.redbubble.com/shop/ap/184065156",
+    ("rb-faith-apparel", "boutique-reverent"): "https://www.redbubble.com/shop/ap/184065279",
+    ("rb-faith-apparel", "heritage-badge"): "https://www.redbubble.com/shop/ap/184065339",
+    ("rb-faith-apparel", "streetwear-bold"): "https://www.redbubble.com/shop/ap/184065394",
+    ("rb-faith-apparel", "streetwear-varsity"): "https://www.redbubble.com/shop/ap/184065451",
+    ("rb-faith-apparel", "amazing-grace-hymn"): "https://www.redbubble.com/shop/ap/184069755",
+    ("rb-faith-apparel", "armor-of-god"): "https://www.redbubble.com/shop/ap/184069856",
+    ("rb-faith-apparel", "blessed-retro"): "https://www.redbubble.com/shop/ap/184076053",
+    ("rb-fishing-humor", "cranky-angler"): "https://www.redbubble.com/shop/ap/184065496",
+    ("rb-fishing-humor", "lake-badge"): "https://www.redbubble.com/shop/ap/184065579",
+    ("rb-fishing-humor", "night-bite"): "https://www.redbubble.com/shop/ap/184065633",
+    ("rb-fishing-humor", "pun-tee"): "https://www.redbubble.com/shop/ap/184065698",
+    ("rb-fishing-humor", "retro-dad"): "https://www.redbubble.com/shop/ap/184065734",
+    ("rb-fishing-humor", "catch-of-the-day"): "https://www.redbubble.com/shop/ap/184076097",
+    ("rb-fishing-humor", "fish-fear-me"): "https://www.redbubble.com/shop/ap/184076145",
+    ("rb-fishing-humor", "gone-fishing-be-back-never"): "https://www.redbubble.com/shop/ap/184076227",
+    ("rb-bookish-identity", "book-club-era"): "https://www.redbubble.com/shop/ap/184065767",
+    ("rb-bookish-identity", "one-more-chapter"): "https://www.redbubble.com/shop/ap/184069353",
+    ("rb-bookish-identity", "romantasy-reader"): "https://www.redbubble.com/shop/ap/184069458",
+    ("rb-bookish-identity", "spicy-book-club"): "https://www.redbubble.com/shop/ap/184069504",
+    ("rb-bookish-identity", "tbr-pile"): "https://www.redbubble.com/shop/ap/184069562",
+    ("rb-bookish-identity", "dark-romance-reader"): "https://www.redbubble.com/shop/ap/184076272",
+    ("rb-bookish-identity", "emotionally-attached"): "https://www.redbubble.com/shop/ap/184076322",
+    ("rb-bookish-identity", "just-one-more-page"): "https://www.redbubble.com/shop/ap/184076360",
+    ("rb-america-250", "faith-freedom"): "https://www.redbubble.com/shop/ap/184066344",
+    ("rb-america-250", "home-of-brave"): "https://www.redbubble.com/shop/ap/184066429",
+    ("rb-america-250", "liberty-bell"): "https://www.redbubble.com/shop/ap/184066582",
+    ("rb-america-250", "we-the-people"): "https://www.redbubble.com/shop/ap/184066647",
+    ("rb-america-250", "eagle-freedom"): "https://www.redbubble.com/shop/ap/184069346",
+    ("rb-america-250", "american-made"): "https://www.redbubble.com/shop/ap/184076479",
+    ("rb-america-250", "dont-tread-on-me"): "https://www.redbubble.com/shop/ap/184076533",
+    ("rb-america-250", "land-of-the-free"): "https://www.redbubble.com/shop/ap/184076586",
+}
 EXP_SRC = os.path.expanduser("~/workspace/goals/multiply-income-streams/niche-expansion/designs")
 MAX_WEB_PX = 1400  # longest side for web images
 
@@ -242,31 +287,31 @@ NICHES = [
      "tagline": "Vintage badge graphics for the trades: diesel techs, welders, electricians, linemen & plumbers.",
      "seo": "Blue-collar trades pride apparel: diesel mechanic, welder, electrician, lineman & plumber badge tees, hoodies & stickers by Odd-jack.",
      "intros": ["Grease under the nails, pride on the chest. This collection turns each trade into a vintage badge graphic — crossed pistons for diesel techs, gear-and-spark emblems for welders, high-voltage attitude for electricians and linemen, and flow-state pride for plumbers.",
-                "These designs are headed to the Odd-jack Redbubble shop as tees, hoodies, and hard-hat-ready stickers. Browse the full badge set below — new trades are dropping soon."]},
+                "These designs are live in the Odd-jack Redbubble shop as tees, hoodies, and hard-hat-ready stickers. Browse the full badge set below — tap any design to shop it direct."]},
     {"folder": "rb-faith-apparel", "slug": "faith-apparel", "name": "Christian / Faith Apparel",
      "emoji": "✝️", "shop": "redbubble",
      "tagline": "Bold faith graphics — streetwear, varsity & boutique styles with crosses, sunsets & scripture vibes.",
      "seo": "Christian faith apparel: bold streetwear crosses, varsity faith tees & minimalist boutique designs by Odd-jack.",
      "intros": ["Wear your faith loud or keep it minimal — this collection covers both. Gritty streetwear graphics with glowing crosses and collegiate lettering, plus clean boutique pieces with mountain silhouettes and sunrise olive branches.",
-                "These designs are headed to the Odd-jack Redbubble shop as tees and hoodies. Browse the styles below and find the one that speaks to your walk."]},
+                "These designs are live in the Odd-jack Redbubble shop as tees and hoodies. Browse the styles below and find the one that speaks to your walk."]},
     {"folder": "rb-fishing-humor", "slug": "fishing-humor", "name": "Bass Fishing / Angler Humor",
      "emoji": "🎣", "shop": "redbubble",
      "tagline": "Sarcastic angler humor tees & decals for bass fishermen and their long-suffering families.",
      "seo": "Funny bass fishing shirts & angler humor decals: grumpy bass badges, retro dad fishing tees & pun graphics by Odd-jack.",
      "intros": ["Cranky by nature, born to fish. This collection is for the angler who fishes best before coffee — grumpy bass badges, retro 70s dad-fishing sunsets, night-bite moonlit scenes, and puns that belong on a boat ramp.",
-                "These designs are headed to the Odd-jack Redbubble shop as tees, hoodies, and stickers. Perfect gifts for the fisherman in your life (or yourself)."]},
+                "These designs are live in the Odd-jack Redbubble shop as tees, hoodies, and stickers. Perfect gifts for the fisherman in your life (or yourself)."]},
     {"folder": "rb-bookish-identity", "slug": "bookish", "name": "Bookish / BookTok Reader Identity",
      "emoji": "📚", "shop": "redbubble",
      "tagline": "Reader-identity tees for the TBR-pile guilty, romantasy girlies & smutty book clubs.",
      "seo": "Bookish reader tees: TBR pile humor, romantasy dragon art & smutty book club shirts for BookTok readers by Odd-jack.",
      "intros": ["One more chapter — that's the whole personality. This collection is reader-identity apparel for BookTok: towering TBR piles, gothic romantasy dragons, 2AM library clocks, and varsity-lettered book club eras.",
-                "These designs are headed to the Odd-jack Redbubble shop as tees, hoodies, and laptop stickers. Your next book-club uniform is below."]},
+                "These designs are live in the Odd-jack Redbubble shop as tees, hoodies, and laptop stickers. Your next book-club uniform is below."]},
     {"folder": "rb-america-250", "slug": "america-250", "name": "America 250th / Patriotic",
      "emoji": "🇺🇸", "shop": "redbubble",
      "tagline": "1776–2026 semiquincentennial badges: eagles, flags & liberty bells in cracked-ink vintage.",
      "seo": "America 250th patriotic apparel: 1776-2026 eagle, flag & liberty bell vintage badges for the semiquincentennial by Odd-jack.",
      "intros": ["250 years of freedom, 1776–2026. This collection marks America's semiquincentennial with cracked-ink heritage badges — bold eagles over worn flags, the Liberty Bell, and WE THE PEOPLE in constitutional lettering.",
-                "These designs are headed to the Odd-jack Redbubble shop as tees, hoodies, and stickers. Proud statement pieces for the 4th of July, Veterans Day, and year-round patriotism."]},
+                "These designs are live in the Odd-jack Redbubble shop as tees, hoodies, and stickers. Proud statement pieces for the 4th of July, Veterans Day, and year-round patriotism."]},
     {"folder": "kf-planner-bundles", "slug": "planner-bundles", "name": "Printable Planner Bundles",
      "emoji": "🗓️", "shop": "kofi",
      "tagline": "Printable planners: ADHD focus, fitness, wedding, reading journals & creator finance.",
@@ -359,7 +404,12 @@ def web_copy_image(item):
 
 def niche_card(item):
     pdir = f"niches/{item['niche']['slug']}/{item['slug']}/"
-    price_html = pfmt(item["price"]) if item["price"] else "Coming soon"
+    if item["price"]:
+        price_html = pfmt(item["price"])
+    elif RB_URLS.get((item["niche"]["folder"], item["slug"])):
+        price_html = "Shop on Redbubble"
+    else:
+        price_html = "Coming soon"
     return (f'<a class="card" href="{BASE_URL}{pdir}">'
             f'<img src="{BASE_URL}images/{item["img"]}" alt="{esc(item["title"])}" loading="lazy">'
             f'<div class="t">{esc(item["title"])}</div><div class="p">{price_html}</div></a>')
@@ -369,12 +419,22 @@ def expansion_product_page(item, all_items):
     n = item["niche"]
     pdir = f"niches/{n['slug']}/{item['slug']}/"
     is_rb = n["shop"] == "redbubble"
-    shop_url = RB_SHOP if is_rb else KOFI_HOME
+    direct = RB_URLS.get((n["folder"], item["slug"])) if is_rb else None
+    shop_url = direct or (RB_SHOP if is_rb else KOFI_HOME)
     shop_name = "Redbubble" if is_rb else "Ko-fi"
-    btn_label = "Browse the Redbubble shop" if is_rb else "Browse the Ko-fi shop"
-    listed = item["price"] is not None
-    price_html = (f'<p class="price">{pfmt(item["price"])} <span style="font-size:.9rem;color:#666;font-weight:400">USD · instant download</span></p>'
-                  if listed else '<p class="price">Coming soon</p>')
+    if direct:
+        btn_label = "View on Redbubble"
+    elif is_rb:
+        btn_label = "Browse the Redbubble shop"
+    else:
+        btn_label = "Browse the Ko-fi shop"
+    listed = item["price"] is not None or direct is not None
+    if item["price"]:
+        price_html = (f'<p class="price">{pfmt(item["price"])} <span style="font-size:.9rem;color:#666;font-weight:400">USD · instant download</span></p>')
+    elif direct:
+        price_html = '<p class="price">Available now</p>'
+    else:
+        price_html = '<p class="price">Coming soon</p>'
     soon_html = (f'<p style="font-size:.9rem;color:#666">🚧 Coming soon to the shop — this design isn\'t listed yet. Follow the {shop_name} shop so you don\'t miss the drop.</p>'
                  if not listed else "")
     specs = [b for b in (item.get("format"),
@@ -385,7 +445,11 @@ def expansion_product_page(item, all_items):
                   if listed and specs else "")
     note_html = (f'<p style="font-size:.9rem;color:#555">{esc(item["note"])}</p>'
                  if listed and item.get("note") else "")
-    if is_rb:
+    if is_rb and direct:
+        ticks = ["Original apparel-ready graphic by Odd Jack O.M.T.",
+                 "Available on tees, hoodies & stickers",
+                 "Buy it direct on Redbubble"]
+    elif is_rb:
         ticks = ["Original apparel-ready graphic by Odd Jack O.M.T.",
                  "Look for it on tees, hoodies & stickers",
                  "New drops land regularly — follow the shop"]
@@ -451,10 +515,11 @@ def niche_landing_page(n, items):
 def niche_count_line(n):
     items = [i for i in EXP_ITEMS if i["niche"] is n]
     count = len(items)
-    priced = sum(1 for i in items if i["price"])
-    if count and priced == count:
+    listed = sum(1 for i in items
+                 if i["price"] or RB_URLS.get((n["folder"], i["slug"])))
+    if count and listed == count:
         return f"{count} designs"
-    if priced:
+    if listed:
         return f"{count} designs · more coming soon"
     return f"{count} designs · coming soon"
 
@@ -509,7 +574,181 @@ def build_expansion(pages):
             pages.append((ipdir, "0.7"))
     print(f"Expansion: {len(EXP_ITEMS)} items across {len(NICHES)} niches")
 
+# ---------------- daily drops ----------------
+DAILY_SRC = os.path.expanduser("~/workspace/redbubble/designs/daily")
+QUEUE_FILE = os.path.expanduser("~/workspace/goals/multiply-income-streams/crew/state/pipeline-queue.md")
+DAILY_PRICE = 3.5  # Ko-fi pay-what-you-want minimum for each daily design download
+
+def slugify(t):
+    return re.sub(r"[^a-z0-9]+", "-", t.lower()).strip("-")[:60]
+
+def load_daily():
+    """Parse the pipeline queue for daily designs with their Redbubble/Ko-fi URLs,
+    loading title/description/tags/image from each design dir's metadata.json."""
+    rows = []
+    with open(QUEUE_FILE) as f:
+        for line in f:
+            line = line.strip()
+            if not line.startswith("|") or line.startswith("| Date") or line.startswith("|---"):
+                continue
+            cols = [c.strip() for c in line.split("|")]
+            if len(cols) < 9:
+                continue
+            date, title, ddir, rb_cell, kofi_cell = cols[1], cols[2], cols[3], cols[4], cols[5]
+            if not re.match(r"20\d\d-\d\d-\d\d", date) or not title:
+                continue
+            rb_m = re.search(r"https://www\.redbubble\.com/shop/ap/\d+", rb_cell)
+            kofi_m = re.search(r"https://ko-fi\.com/s/[0-9a-f]+", kofi_cell)
+            rows.append({"date": date, "title": title, "dir": ddir,
+                         "rb_url": rb_m.group(0) if rb_m else None,
+                         "kofi_url": kofi_m.group(0) if kofi_m else None})
+    items = []
+    for r in rows:
+        ddir = os.path.expanduser(r["dir"])
+        mf = os.path.join(ddir, "metadata.json")
+        if not os.path.isfile(mf):
+            print(f"WARN: daily metadata missing: {mf}")
+            continue
+        m = json.load(open(mf))
+        img = None
+        cand = m.get("filename")
+        if cand and os.path.isfile(os.path.join(ddir, cand)):
+            img = os.path.join(ddir, cand)
+        else:
+            for fn in sorted(os.listdir(ddir)):
+                if fn.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
+                    img = os.path.join(ddir, fn)
+                    break
+        if not img:
+            print(f"WARN: daily image missing in {ddir}")
+            continue
+        slug = slugify(m.get("title") or r["title"])
+        items.append({"date": r["date"], "slug": slug,
+                      "title": m.get("title") or r["title"],
+                      "description": m.get("description", ""),
+                      "tags": m.get("tags", []),
+                      "rb_url": r["rb_url"], "kofi_url": r["kofi_url"],
+                      "cover_src": img, "img": None})
+    items.sort(key=lambda x: (x["date"], x["slug"]), reverse=True)
+    return items
+
+def web_copy_daily(item):
+    """Resize a daily design master to a web-sane JPEG in OUT/images."""
+    from PIL import Image
+    dest_name = f"daily-{item['date']}-{item['slug']}-web.jpg"
+    dest = os.path.join(OUT, "images", dest_name)
+    if os.path.isfile(dest) and os.path.getmtime(dest) >= os.path.getmtime(item["cover_src"]):
+        item["img"] = dest_name
+        return dest_name
+    im = Image.open(item["cover_src"])
+    if max(im.size) > MAX_WEB_PX:
+        im = im.resize((int(im.width * MAX_WEB_PX / max(im.size)),
+                        int(im.height * MAX_WEB_PX / max(im.size))), Image.LANCZOS)
+    if im.mode in ("RGBA", "LA"):
+        bg = Image.new("RGB", im.size, (255, 255, 255))
+        bg.paste(im, mask=im.split()[-1])
+        im = bg
+    elif im.mode != "RGB":
+        im = im.convert("RGB")
+    im.save(dest, "JPEG", quality=82, optimize=True)
+    item["img"] = dest_name
+    return dest_name
+
+def daily_dir(item):
+    return f"daily/{item['date']}-{item['slug']}/"
+
+def daily_card(item):
+    pdir = daily_dir(item)
+    return (f'<a class="card" href="{BASE_URL}{pdir}">'
+            f'<img src="{BASE_URL}images/{item["img"]}" alt="{esc(item["title"])}" loading="lazy">'
+            f'<div class="t">{esc(item["title"])}</div><div class="p">{pfmt(DAILY_PRICE)}</div></a>')
+
+def daily_product_page(item, all_items):
+    pdir = daily_dir(item)
+    if item["rb_url"]:
+        btns = (f'<p><a class="btn" href="{esc(item["rb_url"])}" rel="noopener">View on Redbubble</a>'
+                + (f' <a class="btn alt" style="color:#5b2a86;border-color:#5b2a86" href="{esc(item["kofi_url"])}" rel="noopener">Get the $3.50 download</a>'
+                   if item["kofi_url"] else "")
+                + "</p>")
+        ticks = ["Original art by Odd Jack O.M.T.",
+                 "Available on Redbubble tees, hoodies & stickers"]
+        if item["kofi_url"]:
+            ticks.append("Also a $3.50 pay-what-you-want instant download on Ko-fi")
+        price_html = '<p class="price">Available now</p>'
+        soon_html = ""
+    elif item["kofi_url"]:
+        btns = f'<p><a class="btn" href="{esc(item["kofi_url"])}" rel="noopener">Buy instant download on Ko-fi</a></p>'
+        ticks = ["High-resolution JPG, instant download",
+                 "Original art by Odd Jack O.M.T.",
+                 "Personal use only",
+                 "Redbubble apparel listing coming soon"]
+        price_html = (f'<p class="price">{pfmt(DAILY_PRICE)} <span style="font-size:.9rem;color:#666;font-weight:400">USD · pay what you want</span></p>')
+        soon_html = ""
+    else:
+        btns = (f'<p><a class="btn" href="{RB_SHOP}" rel="noopener">Browse the Redbubble shop</a> '
+                f'<a class="btn alt" style="color:#5b2a86;border-color:#5b2a86" href="{KOFI_HOME}" rel="noopener">Browse the Ko-fi shop</a></p>')
+        ticks = ["Original art by Odd Jack O.M.T.",
+                 "New drops land regularly — follow the shops"]
+        price_html = '<p class="price">Coming soon</p>'
+        soon_html = '<p style="font-size:.9rem;color:#666">🚧 Coming soon — this design is fresh out of the studio and isn\'t listed yet. Follow the shops so you don\'t miss the drop.</p>'
+    tags_html = (f'<p style="font-size:.85rem;color:#666">Tags: {esc(", ".join(item["tags"][:12]))}</p>'
+                 if item["tags"] else "")
+    same = [x for x in all_items if x is not item][:4]
+    rel_html = "".join(daily_card(r) for r in same)
+    body = f"""<main class="wrap">
+<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}daily/">Daily Drops</a> › {esc(item['title'])}</p>
+<div class="product">
+<div><img src="{BASE_URL}images/{item['img']}" alt="{esc(item['title'])}"></div>
+<div>
+<h1>{esc(item['title'])}</h1>
+{price_html}
+{btns}
+{soon_html}
+<ul class="tick">{"".join(f"<li>{t}</li>" for t in ticks)}</ul>
+<p>{esc(item['description'])}</p>
+{tags_html}
+</div>
+</div>
+<h2>More daily drops</h2>
+<div class="grid">{rel_html}</div>
+</main>"""
+    ld_data = {"@context": "https://schema.org", "@type": "Product", "name": item["title"],
+               "image": BASE_URL + "images/" + item["img"],
+               "description": meta_desc(item["description"]),
+               "brand": {"@type": "Brand", "name": "Odd-jack"},
+               "offers": {"@type": "Offer", "priceCurrency": "USD", "price": str(DAILY_PRICE),
+                          "availability": "https://schema.org/InStock",
+                          "url": item["rb_url"] or item["kofi_url"] or RB_SHOP}}
+    ld = '<script type="application/ld+json">\n' + json.dumps(ld_data, indent=2) + "\n</script>"
+    return head(f"{item['title']} — Daily Drop | Odd-jack", meta_desc(item["description"]),
+                pdir, item["img"], ld) + body + FOOTER
+
+def daily_hub_page(items):
+    groups = []
+    for date in sorted({i["date"] for i in items}, reverse=True):
+        cards = "".join(daily_card(i) for i in items if i["date"] == date)
+        groups.append(f'<h2>{date}</h2><div class="grid">{cards}</div>')
+    body = f"""<div class="hero"><div class="wrap">
+<h1>📅 Daily Drops</h1>
+<p>Fresh designs from the daily pipeline — cute animals, Halloween chaos &amp; seasonal kitties, three a day. Each one lands on Redbubble as apparel and on Ko-fi as a $3.50 download.</p>
+</div></div>
+<main class="wrap">
+{"".join(groups)}
+</main>"""
+    desc = "Odd-jack daily design drops: three fresh cute-animal & Halloween designs a day, on Redbubble apparel and $3.50 Ko-fi downloads."
+    return head("Daily Drops — New Odd-jack Designs Every Day", desc, "daily/",
+                items[0]["img"] if items else None) + body + FOOTER
+
+def build_daily(pages):
+    write("daily/index.html", daily_hub_page(DAILY_ITEMS)); pages.append(("daily/", "0.85"))
+    for it in DAILY_ITEMS:
+        pdir = daily_dir(it)
+        write(pdir + "index.html", daily_product_page(it, DAILY_ITEMS))
+        pages.append((pdir, "0.7"))
+    print(f"Daily: {len(DAILY_ITEMS)} designs")
+
 EXP_ITEMS = []
+DAILY_ITEMS = []
 # ---------------- build ----------------
 ITEMS = load_manifests()
 
@@ -520,9 +759,10 @@ def write(path, content):
         f.write(content)
 
 def main():
-    global ITEMS, EXP_ITEMS
+    global ITEMS, EXP_ITEMS, DAILY_ITEMS
     ITEMS = load_manifests()
     EXP_ITEMS = load_expansion()
+    DAILY_ITEMS = load_daily()
     os.makedirs(f"{OUT}/images", exist_ok=True)
     # copy images
     missing = []
@@ -541,6 +781,8 @@ def main():
         print("MISSING IMAGES:", missing)
     for it in EXP_ITEMS:
         web_copy_image(it)
+    for it in DAILY_ITEMS:
+        web_copy_daily(it)
 
     pages = []  # (path, priority)
     write("index.html", homepage()); pages.append(("", "1.0"))
@@ -583,6 +825,9 @@ def main():
 
     # niche expansion: hub, niche landings, item pages
     build_expansion(pages)
+
+    # daily drops: hub + item pages
+    build_daily(pages)
 
     # sitemap
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
