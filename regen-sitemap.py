@@ -16,7 +16,7 @@ if os.path.exists(os.path.join(ROOT, "sitemap.xml")):
     txt = open(os.path.join(ROOT, "sitemap.xml")).read()
     for m in re.finditer(r"<url><loc>([^<]+)</loc><lastmod>([^<]+)</lastmod>", txt):
         old[m.group(1)] = m.group(2)
-TODAY = "2026-09-28"
+TODAY = "2026-10-02"
 
 urls = []
 for dirpath, _dn, fn in sorted(os.walk(ROOT)):
@@ -32,7 +32,8 @@ def priority(url):
     if not p:
         return "1.0"
     if p in ("guides", "niches", "daily", "halloween", "cat-wallpapers",
-             "printable-wall-art", "sticker-art", "packs"):
+             "printable-wall-art", "sticker-art", "packs", "morbid-quotes",
+             "bundles"):
         return "0.9"
     if depth == 1:
         return "0.8"

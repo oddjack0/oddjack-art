@@ -6,7 +6,7 @@ BASE_URL = "https://oddjack0.github.io/oddjack-art/"
 SHOP_URL = "https://ko-fi.com/oddjack/shop"
 SRC = os.path.expanduser("~/workspace/kofi-challenge")
 OUT = os.path.dirname(os.path.abspath(__file__))
-TODAY = "2026-09-28"
+TODAY = "2026-10-02"
 
 # ---------------- data ----------------
 def load_manifests():
@@ -47,7 +47,7 @@ def load_manifests():
             url = SHOP_URL
         items.append({"num": num, "slug": slug, "title": entry["title"],
                       "description": entry["description"], "url": url,
-                      "img": f"{slug}.jpg", "price": 3.5})
+                      "img": f"{slug}.jpg", "price": 2})
     items.sort(key=lambda x: x["num"])
     return items
 
@@ -155,9 +155,9 @@ def product_page(item):
 <div><img src="{img_url}" alt="{esc(item['title'])} digital download"></div>
 <div>
 <h1>{esc(item['title'])}</h1>
-<p class="price">{pfmt(item['price'])} <span style="font-size:.9rem;color:#666;font-weight:400">USD · instant download</span></p>
-<p><a class="btn" href="{esc(item['url'])}" rel="noopener">Buy instant download on Ko-fi</a></p>
-<ul class="tick"><li>High-resolution JPG, instant download</li><li>Perfect as a phone wallpaper or printable wall art</li><li>Original art by Odd Jack O.M.T.</li><li>Personal use only</li></ul>
+<p class="price">{pfmt(item['price'])} <span style="font-size:.9rem;color:#666;font-weight:400">USD · fixed price</span></p>
+{dual_cta(item["url"], RB_SHOP, kofi_live=True, rb_live=False)}
+<ul class="tick"><li>Instant $2 download on Ko-fi</li><li>Perfect as a phone wallpaper or printable wall art</li><li>Original art by Odd Jack O.M.T.</li><li>Also on Redbubble as tees, hoodies & stickers</li><li>Personal use only</li></ul>
 <p>{esc(item['description'])}</p>
 </div>
 </div>
@@ -192,8 +192,8 @@ def homepage():
     feat = "".join(card(r, f"designs/{r['num']:02d}-{r['slug']}/") for r in featured)
     body = f"""<div class="hero"><div class="wrap">
 <h1>Halloween Cat Art &amp; Kawaii Cat Wallpapers</h1>
-<p>Adorable spooky kitties as instant-download phone wallpapers, printable wall art &amp; stickers. New Halloween designs weekly — just $3.50 each.</p>
-<p><a class="btn" href="{SHOP_URL}" rel="noopener">Shop all 74 designs on Ko-fi</a> <a class="btn alt" href="{BASE_URL}halloween/">Browse Halloween cats</a></p>
+<p>Adorable spooky kitties as instant-download phone wallpapers, printable wall art &amp; stickers. Every design just $2 — download on Ko-fi or grab it as merch on Redbubble.</p>
+<p><a class="btn" href="{SHOP_URL}" rel="noopener">Shop all designs on Ko-fi — $2 each</a> <a class="btn alt" href="{BASE_URL}halloween/">Browse Halloween cats</a></p>
 </div></div>
 <main class="wrap">
 <h2>Featured Halloween kitties</h2>
@@ -204,6 +204,8 @@ def homepage():
 <a class="catcard" href="{BASE_URL}cat-wallpapers/"><h3>📱 Cat Wallpapers</h3><p>Vertical phone wallpapers starring kawaii kitties.</p></a>
 <a class="catcard" href="{BASE_URL}printable-wall-art/"><h3>🖼️ Printable Wall Art</h3><p>High-res cat art ready to print, frame &amp; hang.</p></a>
 <a class="catcard" href="{BASE_URL}sticker-art/"><h3>✨ Sticker Art</h3><p>Kawaii cat designs made for sticker printing.</p></a>
+<a class="catcard" href="{BASE_URL}morbid-quotes/"><h3>💀 Morbid Funny Quotes</h3><p>62 deadpan quotes for dark-humor lovers — $2 downloads, tees &amp; stickers.</p></a>
+<a class="catcard" href="{BASE_URL}bundles/"><h3>🎁 $16 Bundle Packs</h3><p>Ten designs per bundle, one flat price — save on Ko-fi.</p></a>
 </div>
 <h2>New: shop by niche</h2>
 <div class="cats">
@@ -215,8 +217,11 @@ def homepage():
 <p>Odd art by Odd Jack O.M.T. — cute kawaii cats, elemental kitties, psychedelic art &amp; spooky Halloween drops. Every design is an instant digital download: buy once on Ko-fi and use it as your phone wallpaper, print it for your walls, or turn it into stickers. New designs drop weekly.</p>
 <h2>All 70 Halloween designs</h2>
 <div class="grid">{"".join(card(r, f"designs/{r['num']:02d}-{r['slug']}/") for r in ITEMS)}</div>
+<h2>💀 New: Morbid Funny Quotes</h2>
+<div class="grid">{"".join(morbid_card(r) for r in MORBID_ITEMS[:8])}</div>
+<p><a class="btn" href="{BASE_URL}morbid-quotes/">Browse all 62 morbid quotes</a></p>
 </main>"""
-    desc = "70+ cute Halloween cat art designs as $3.50 instant downloads — kawaii cat phone wallpapers, printable wall art & sticker packs by Odd-jack."
+    desc = "165+ Odd-jack art designs as $2 instant downloads — Halloween cat art, kawaii cat wallpapers, morbid funny quotes & sticker packs. Download on Ko-fi or shop merch on Redbubble."
     return head("Halloween Cat Art & Kawaii Cat Wallpapers — Odd-jack Art", desc, "", ITEMS[0]["img"]) + body + FOOTER
 
 def category_page(path, h1, title, desc, intro_paras, items):
@@ -526,7 +531,7 @@ def niche_count_line(n):
 
 def niches_hub_page():
     existing = [
-        ("halloween/", "🎃", "Halloween Cats", "70 spooky-cute kitty designs as $3.50 instant downloads.", "70 designs"),
+        ("halloween/", "🎃", "Halloween Cats", "70 spooky-cute kitty designs as $2 instant downloads.", "70 designs"),
         ("cat-wallpapers/", "📱", "Wallpapers", "Vertical kawaii cat phone wallpapers.", "70 designs"),
         ("printable-wall-art/", "🖼️", "Prints", "High-res cat art ready to print & frame.", "70 designs"),
         ("sticker-art/", "✨", "Sticker Packs", "Kawaii cat designs made for sticker printing.", "70+ designs"),
@@ -577,7 +582,7 @@ def build_expansion(pages):
 # ---------------- daily drops ----------------
 DAILY_SRC = os.path.expanduser("~/workspace/redbubble/designs/daily")
 QUEUE_FILE = os.path.expanduser("~/workspace/goals/multiply-income-streams/crew/state/pipeline-queue.md")
-DAILY_PRICE = 3.5  # Ko-fi pay-what-you-want minimum for each daily design download
+DAILY_PRICE = 2.0  # Ko-fi fixed price for each daily design download (2026-10-02: $2 PWYW retired)
 
 def slugify(t):
     return re.sub(r"[^a-z0-9]+", "-", t.lower()).strip("-")[:60]
@@ -663,34 +668,45 @@ def daily_card(item):
             f'<img src="{BASE_URL}images/{item["img"]}" alt="{esc(item["title"])}" loading="lazy">'
             f'<div class="t">{esc(item["title"])}</div><div class="p">{pfmt(DAILY_PRICE)}</div></a>')
 
+def dual_cta(kofi_url, rb_url, kofi_live=True, rb_live=True):
+    """Consistent two-button layout used on every design page:
+    'Download on Ko-fi — $2' + 'Merch on Redbubble'. Fallback labels when
+    the listing isn't live yet."""
+    kl = "Download on Ko-fi — $2" if kofi_live else "Browse the Ko-fi shop"
+    rl = "Merch on Redbubble" if rb_live else "Browse the Redbubble shop"
+    return (f'<p><a class="btn" href="{esc(kofi_url)}" rel="noopener">{kl}</a> '
+            f'<a class="btn alt" style="color:#5b2a86;border-color:#5b2a86" href="{esc(rb_url)}" rel="noopener">{rl}</a></p>')
+
+
 def daily_product_page(item, all_items):
     pdir = daily_dir(item)
-    if item["rb_url"]:
-        btns = (f'<p><a class="btn" href="{esc(item["rb_url"])}" rel="noopener">View on Redbubble</a>'
-                + (f' <a class="btn alt" style="color:#5b2a86;border-color:#5b2a86" href="{esc(item["kofi_url"])}" rel="noopener">Get the $3.50 download</a>'
-                   if item["kofi_url"] else "")
-                + "</p>")
-        ticks = ["Original art by Odd Jack O.M.T.",
-                 "Available on Redbubble tees, hoodies & stickers"]
-        if item["kofi_url"]:
-            ticks.append("Also a $3.50 pay-what-you-want instant download on Ko-fi")
+    kofi_url = item["kofi_url"] or SHOP_URL
+    rb_url = item["rb_url"] or RB_SHOP
+    btns = dual_cta(kofi_url, rb_url, kofi_live=bool(item["kofi_url"]),
+                    rb_live=bool(item["rb_url"]))
+    if item["kofi_url"] and item["rb_url"]:
+        price_html = (f'<p class="price">{pfmt(DAILY_PRICE)} <span style="font-size:.9rem;color:#666;font-weight:400">USD · fixed price</span></p>')
+        soon_html = ""
+        ticks = ["Instant $2 download on Ko-fi",
+                 "Original art by Odd Jack O.M.T.",
+                 "Also on Redbubble tees, hoodies & stickers"]
+    elif item["kofi_url"]:
+        price_html = (f'<p class="price">{pfmt(DAILY_PRICE)} <span style="font-size:.9rem;color:#666;font-weight:400">USD · fixed price</span></p>')
+        soon_html = '<p style="font-size:.9rem;color:#666">🚧 Redbubble merch for this design is still being uploaded — check the shop soon.</p>'
+        ticks = ["Instant $2 download on Ko-fi",
+                 "Original art by Odd Jack O.M.T.",
+                 "Personal use only"]
+    elif item["rb_url"]:
         price_html = '<p class="price">Available now</p>'
         soon_html = ""
-    elif item["kofi_url"]:
-        btns = f'<p><a class="btn" href="{esc(item["kofi_url"])}" rel="noopener">Buy instant download on Ko-fi</a></p>'
-        ticks = ["High-resolution JPG, instant download",
-                 "Original art by Odd Jack O.M.T.",
-                 "Personal use only",
-                 "Redbubble apparel listing coming soon"]
-        price_html = (f'<p class="price">{pfmt(DAILY_PRICE)} <span style="font-size:.9rem;color:#666;font-weight:400">USD · pay what you want</span></p>')
-        soon_html = ""
-    else:
-        btns = (f'<p><a class="btn" href="{RB_SHOP}" rel="noopener">Browse the Redbubble shop</a> '
-                f'<a class="btn alt" style="color:#5b2a86;border-color:#5b2a86" href="{KOFI_HOME}" rel="noopener">Browse the Ko-fi shop</a></p>')
         ticks = ["Original art by Odd Jack O.M.T.",
-                 "New drops land regularly — follow the shops"]
+                 "Available on Redbubble tees, hoodies & stickers",
+                 "Ko-fi $2 download coming soon"]
+    else:
         price_html = '<p class="price">Coming soon</p>'
         soon_html = '<p style="font-size:.9rem;color:#666">🚧 Coming soon — this design is fresh out of the studio and isn\'t listed yet. Follow the shops so you don\'t miss the drop.</p>'
+        ticks = ["Original art by Odd Jack O.M.T.",
+                 "New drops land regularly — follow the shops"]
     tags_html = (f'<p style="font-size:.85rem;color:#666">Tags: {esc(", ".join(item["tags"][:12]))}</p>'
                  if item["tags"] else "")
     same = [x for x in all_items if x is not item][:4]
@@ -730,12 +746,12 @@ def daily_hub_page(items):
         groups.append(f'<h2>{date}</h2><div class="grid">{cards}</div>')
     body = f"""<div class="hero"><div class="wrap">
 <h1>📅 Daily Drops</h1>
-<p>Fresh designs from the daily pipeline — cute animals, Halloween chaos &amp; seasonal kitties, three a day. Each one lands on Redbubble as apparel and on Ko-fi as a $3.50 download.</p>
+<p>Fresh designs from the daily pipeline — cute animals, Halloween chaos &amp; seasonal kitties, three a day. Download any design on Ko-fi for a flat $2, or grab it as merch on Redbubble.</p>
 </div></div>
 <main class="wrap">
 {"".join(groups)}
 </main>"""
-    desc = "Odd-jack daily design drops: three fresh cute-animal & Halloween designs a day, on Redbubble apparel and $3.50 Ko-fi downloads."
+    desc = "Odd-jack daily design drops: three fresh cute-animal & Halloween designs a day. $2 downloads on Ko-fi, merch on Redbubble."
     return head("Daily Drops — New Odd-jack Designs Every Day", desc, "daily/",
                 items[0]["img"] if items else None) + body + FOOTER
 
@@ -747,8 +763,484 @@ def build_daily(pages):
         pages.append((pdir, "0.7"))
     print(f"Daily: {len(DAILY_ITEMS)} designs")
 
+# ---------------- morbid quotes ----------------
+# 62 morbid-funny-quote designs. Masters:
+#   ~/workspace/redbubble/designs/morbid-quotes/{01..31}/quote-NN.png
+#   ~/workspace/redbubble/designs/morbid-quotes-batch2/{32..62}/quote-NN.png
+# Listing URLs copied from the publishing trackers (Ko-fi "paid" column only;
+# free/$0 listings are excluded per the new model):
+#   ~/workspace/goals/multiply-income-streams/niche-expansion/morbid-quotes-publishing.md
+#   ~/workspace/goals/multiply-income-streams/niche-expansion/morbid-quotes-batch2-publishing.md
+MORBID_SRC1 = os.path.expanduser("~/workspace/redbubble/designs/morbid-quotes")
+MORBID_SRC2 = os.path.expanduser("~/workspace/redbubble/designs/morbid-quotes-batch2")
+MORBID_TRACKERS = [
+    os.path.expanduser("~/workspace/goals/multiply-income-streams/niche-expansion/morbid-quotes-publishing.md"),
+    os.path.expanduser("~/workspace/goals/multiply-income-streams/niche-expansion/morbid-quotes-batch2-publishing.md"),
+]
+MORBID_PRICE = 2.0  # flat $2 Ko-fi download under the new model
+
+
+def load_morbid():
+    """Load all 62 morbid quotes: exact quote text from metadata.json, RB/Ko-fi
+    listing URLs from the publishing trackers."""
+    info = {}  # n -> {"rb": url|None, "kofi": url|None}
+    for tf in MORBID_TRACKERS:
+        with open(tf) as f:
+            for line in f:
+                line = line.strip()
+                if not line.startswith("|"):
+                    continue
+                cols = [c.strip() for c in line.split("|")]
+                if len(cols) < 7 or not re.match(r"\d+$", cols[1]):
+                    continue
+                n, status, rb_cell, kofi_cell = int(cols[1]), cols[3], cols[4], cols[5]
+                rb_m = re.search(r"https://www\.redbubble\.com/shop/ap/\d+", rb_cell)
+                kofi_m = re.search(r"https://ko-fi\.com/s/[0-9a-f]+", kofi_cell)
+                info[n] = {"rb": rb_m.group(0) if (status == "live" and rb_m) else None,
+                           "kofi": kofi_m.group(0) if kofi_m else None}
+    items = []
+    for n in range(1, 63):
+        src = MORBID_SRC1 if n <= 31 else MORBID_SRC2
+        ddir = os.path.join(src, f"{n:02d}")
+        mf = os.path.join(ddir, "metadata.json")
+        if not os.path.isfile(mf):
+            print(f"WARN: morbid metadata missing: {mf}")
+            continue
+        m = json.load(open(mf))
+        img_src = os.path.join(ddir, f"quote-{n:02d}.png")
+        if not os.path.isfile(img_src):
+            print(f"WARN: morbid image missing: {img_src}")
+            continue
+        tr = info.get(n, {})
+        kofi_url = tr.get("kofi") or SHOP_URL
+        items.append({"num": n, "title": m["quote"],
+                      "description": m.get("description", ""), "tags": m.get("tags", []),
+                      "rb_url": tr.get("rb"), "kofi_url": kofi_url,
+                      "kofi_fallback": not tr.get("kofi"),
+                      "cover_src": img_src, "img": None, "price": MORBID_PRICE})
+    items.sort(key=lambda x: x["num"])
+    return items
+
+
+def web_copy_morbid(item):
+    """Resize a morbid quote master to a web-sane JPEG in OUT/images."""
+    from PIL import Image
+    dest_name = f"morbid-quote-{item['num']:02d}-web.jpg"
+    dest = os.path.join(OUT, "images", dest_name)
+    if os.path.isfile(dest) and os.path.getmtime(dest) >= os.path.getmtime(item["cover_src"]):
+        item["img"] = dest_name
+        return dest_name
+    im = Image.open(item["cover_src"])
+    if max(im.size) > MAX_WEB_PX:
+        im = im.resize((int(im.width * MAX_WEB_PX / max(im.size)),
+                        int(im.height * MAX_WEB_PX / max(im.size))), Image.LANCZOS)
+    if im.mode in ("RGBA", "LA"):
+        bg = Image.new("RGB", im.size, (255, 255, 255))
+        bg.paste(im, mask=im.split()[-1])
+        im = bg
+    elif im.mode != "RGB":
+        im = im.convert("RGB")
+    im.save(dest, "JPEG", quality=82, optimize=True)
+    item["img"] = dest_name
+    return dest_name
+
+
+def morbid_dir(item):
+    return f"morbid-quotes/{item['num']:02d}-{slugify(item['title'])}/"
+
+
+def morbid_card(item):
+    pdir = morbid_dir(item)
+    return (f'<a class="card" href="{BASE_URL}{pdir}">'
+            f'<img src="{BASE_URL}images/{item["img"]}" alt="{esc(item["title"])}" loading="lazy">'
+            f'<div class="t">{esc(item["title"])}</div><div class="p">{pfmt(item["price"])}</div></a>')
+
+
+def morbid_product_page(item, all_items):
+    pdir = morbid_dir(item)
+    kofi_url = item["kofi_url"]
+    rb_url = item["rb_url"] or RB_SHOP
+    btns = dual_cta(kofi_url, rb_url, kofi_live=not item["kofi_fallback"],
+                    rb_live=bool(item["rb_url"]))
+    soon_bits = []
+    if item["kofi_fallback"]:
+        soon_bits.append("🚧 The $2 Ko-fi download for this quote isn't live yet — browse the shop meanwhile.")
+    if not item["rb_url"]:
+        soon_bits.append("🚧 Redbubble merch for this quote is still being uploaded — check the shop soon.")
+    soon_html = "".join(f'<p style="font-size:.9rem;color:#666">{b}</p>' for b in soon_bits)
+    price_html = (f'<p class="price">{pfmt(item["price"])} <span style="font-size:.9rem;color:#666;font-weight:400">USD · fixed price</span></p>')
+    ticks = ["Instant $2 download on Ko-fi",
+             "Deadpan morbid humor by Odd Jack O.M.T.",
+             "Also on Redbubble tees, hoodies & stickers",
+             "Personal use only"]
+    tags_html = (f'<p style="font-size:.85rem;color:#666">Tags: {esc(", ".join(item["tags"][:12]))}</p>'
+                 if item["tags"] else "")
+    same = [x for x in all_items if x is not item]
+    rel = [same[(item["num"] - 1 + i) % len(same)] for i in (1, 2, 3, 4)]
+    rel_html = "".join(morbid_card(r) for r in rel)
+    body = f"""<main class="wrap">
+<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}morbid-quotes/">Morbid Funny Quotes</a> › {esc(item['title'])}</p>
+<div class="product">
+<div><img src="{BASE_URL}images/{item['img']}" alt="{esc(item['title'])}"></div>
+<div>
+<h1>{esc(item['title'])}</h1>
+{price_html}
+{btns}
+{soon_html}
+<ul class="tick">{"".join(f"<li>{t}</li>" for t in ticks)}</ul>
+<p>{esc(item['description'])}</p>
+{tags_html}
+</div>
+</div>
+<h2>More morbid quotes</h2>
+<div class="grid">{rel_html}</div>
+</main>"""
+    ld_data = {"@context": "https://schema.org", "@type": "Product", "name": item["title"],
+               "image": BASE_URL + "images/" + item["img"],
+               "description": meta_desc(item["description"]),
+               "brand": {"@type": "Brand", "name": "Odd-jack"},
+               "offers": {"@type": "Offer", "priceCurrency": "USD", "price": str(item["price"]),
+                          "availability": "https://schema.org/InStock",
+                          "url": item["kofi_url"] if not item["kofi_fallback"] else SHOP_URL}}
+    ld = '<script type="application/ld+json">\n' + json.dumps(ld_data, indent=2) + "\n</script>"
+    return head(f"{item['title']} — Morbid Funny Quotes | Odd-jack",
+                meta_desc(item["description"]), pdir, item["img"], ld) + body + FOOTER
+
+
+def morbid_hub_page(items):
+    cards = "".join(morbid_card(i) for i in items)
+    body = f"""<div class="hero"><div class="wrap">
+<h1>💀 Morbid Funny Quotes</h1>
+<p>62 deadpan, sarcastic, slightly unhinged quotes for dark-humor lovers. Every design is a flat $2 instant download on Ko-fi — or grab it as a tee, hoodie, or sticker on Redbubble.</p>
+<p><a class="btn" href="{SHOP_URL}" rel="noopener">Shop the Ko-fi store</a> <a class="btn alt" href="{RB_SHOP}" rel="noopener">Odd-jack on Redbubble</a></p>
+</div></div>
+<main class="wrap">
+<h2>All 62 morbid quotes</h2>
+<div class="grid">{cards}</div>
+<p><a class="btn" href="{SHOP_URL}" rel="noopener">Shop all designs on Ko-fi</a></p>
+</main>"""
+    desc = "62 morbid funny quote designs: deadpan sarcastic quotes as $2 instant downloads on Ko-fi and Redbubble merch. Dark humor stickers, tees & wall art by Odd-jack."
+    return head("Morbid Funny Quotes — 62 Deadpan Designs | Odd-jack", desc, "morbid-quotes/",
+                items[0]["img"] if items else None) + body + FOOTER
+
+
+def build_morbid(pages):
+    write("morbid-quotes/index.html", morbid_hub_page(MORBID_ITEMS)); pages.append(("morbid-quotes/", "0.9"))
+    for it in MORBID_ITEMS:
+        pdir = morbid_dir(it)
+        write(pdir + "index.html", morbid_product_page(it, MORBID_ITEMS))
+        pages.append((pdir, "0.7"))
+    print(f"Morbid: {len(MORBID_ITEMS)} designs "
+          f"({sum(1 for i in MORBID_ITEMS if i['rb_url'])} RB live, "
+          f"{sum(1 for i in MORBID_ITEMS if i['kofi_fallback'])} Ko-fi fallback)")
+
+# ---------------- $16 bundles ----------------
+# Real bundle definitions (Workstream B, 2026-10-02):
+#   ~/workspace/goals/multiply-income-streams/niche-expansion/bundles-16usd.md
+# Per-bundle format:
+#   ## <Bundle title>
+#   - **Niche:** X
+#   - **ZIP:** `bundles/NN-...-bundle.zip`      (relative to BUNDLE_SRC)
+#   - **Cover (1080px):** `bundles/NN-...-cover.jpg`
+#   - **Ko-fi URL:** _pending publishing_        (or a real URL once published)
+#   **Designs included:**
+#   1. <exact design title>
+#   ...
+#   **Suggested description:**
+#   <paragraph>
+#   **Suggested tags:** a, b, c
+# "## Remainders" / "## Notes" sections are not bundles and are skipped.
+BUNDLE_SRC = os.path.expanduser("~/workspace/goals/multiply-income-streams/niche-expansion")
+BUNDLES_FILE = os.path.join(BUNDLE_SRC, "bundles-16usd.md")
+BUNDLE_PRICE = 16
+
+
+def _meta_val(s, key):
+    m = re.match(r"^-?\s*\*\*" + re.escape(key) + r":\*\*\s*(.*)$", s)
+    return m.group(1).strip() if m else None
+
+
+def _backticked(s):
+    m = re.search(r"`([^`]+)`", s)
+    return m.group(1) if m else ""
+
+
+def load_bundles():
+    if not os.path.isfile(BUNDLES_FILE):
+        print(f"INFO: {BUNDLES_FILE} not present — building bundle placeholder hub only")
+        return []
+    bundles = []
+    cur = None
+    state = None
+    with open(BUNDLES_FILE) as f:
+        for raw in f:
+            line = raw.rstrip("\n")
+            s = line.strip()
+            if s.startswith("## "):
+                if cur:
+                    bundles.append(cur)
+                title = s[3:].strip()
+                if title.lower().startswith("remainder") or title.lower() == "notes":
+                    cur = None
+                    state = None
+                    continue
+                cur = {"title": title, "niche": "", "zip": "", "cover": "",
+                       "kofi": "", "designs": [], "description": "", "tags": []}
+                state = None
+                continue
+            if cur is None:
+                continue
+            if s == "---":
+                state = None
+                continue
+            v = _meta_val(s, "Niche")
+            if v is not None:
+                cur["niche"] = v
+                continue
+            v = _meta_val(s, "ZIP")
+            if v is not None:
+                cur["zip"] = _backticked(v)
+                continue
+            v = _meta_val(s, "Cover (1080px)")
+            if v is not None:
+                cur["cover"] = _backticked(v)
+                continue
+            v = _meta_val(s, "Ko-fi URL")
+            if v is not None:
+                m = re.search(r"https://ko-fi\.com/\S+", v)
+                cur["kofi"] = m.group(0) if m else ""
+                continue
+            if s == "**Designs included:**":
+                state = "designs"
+                continue
+            if s == "**Suggested description:**":
+                state = "desc"
+                continue
+            v = _meta_val(s, "Suggested tags")
+            if v is not None:
+                cur["tags"] = [t.strip() for t in v.split(",") if t.strip()]
+                state = None
+                continue
+            if state == "designs":
+                m = re.match(r"^\d+\.\s+(.+)$", s)
+                if m:
+                    cur["designs"].append(m.group(1).strip())
+                elif s:
+                    state = None
+                continue
+            if state == "desc" and s and not s.startswith("**"):
+                cur["description"] = (cur["description"] + " " + s).strip()
+    if cur:
+        bundles.append(cur)
+    for b in bundles:
+        b["slug"] = os.path.basename(b["zip"]).replace("-bundle.zip", "") if b["zip"] else slugify(b["title"])
+    return [b for b in bundles if b["title"] and b["designs"]]
+
+
+def norm_title(t):
+    return re.sub(r"[^a-z0-9]", "", t.lower())
+
+
+def build_design_index():
+    """Normalized design title -> (page_dir, web_img, display_title)."""
+    idx = {}
+
+    def add(title, pdir, img):
+        t = norm_title(title)
+        if t and t not in idx:
+            idx[t] = (pdir, img, title)
+    for it in MORBID_ITEMS:
+        add(it["title"], morbid_dir(it), it["img"])
+    for it in ITEMS:
+        add(it["title"], f"designs/{it['num']:02d}-{it['slug']}/", it["img"])
+    for it in DAILY_ITEMS:
+        add(it["title"], daily_dir(it), it["img"])
+    return idx
+
+
+def resolve_bundle_design(ref, design_idx):
+    return design_idx.get(norm_title(ref))
+
+
+def _zip_match(names, title):
+    slug = slugify(title)
+    for n in names:
+        if slug and slug in os.path.basename(n).lower():
+            return n
+    for n in names:
+        if slug[:30] and slug[:30] in os.path.basename(n).lower():
+            return n
+    return None
+
+
+def web_copy_bundle_cover(b):
+    """Web-sized copy of the bundle cover art."""
+    from PIL import Image
+    src = os.path.join(BUNDLE_SRC, b["cover"])
+    if not os.path.isfile(src):
+        print(f"WARN: bundle cover missing: {src}")
+        return None
+    dest_name = f"bundle-{b['slug']}-cover.jpg"
+    dest = os.path.join(OUT, "images", dest_name)
+    if os.path.isfile(dest) and os.path.getmtime(dest) >= os.path.getmtime(src):
+        return dest_name
+    im = Image.open(src)
+    if max(im.size) > MAX_WEB_PX:
+        im = im.resize((int(im.width * MAX_WEB_PX / max(im.size)),
+                        int(im.height * MAX_WEB_PX / max(im.size))), Image.LANCZOS)
+    if im.mode in ("RGBA", "LA"):
+        bg = Image.new("RGB", im.size, (255, 255, 255))
+        bg.paste(im, mask=im.split()[-1])
+        im = bg
+    elif im.mode != "RGB":
+        im = im.convert("RGB")
+    im.save(dest, "JPEG", quality=82, optimize=True)
+    return dest_name
+
+
+def web_copy_bundle_thumb(b, i, title, zf, zip_names, zip_mtime):
+    """Thumbnail for a bundle design that has no site page: extract its master
+    from the bundle ZIP and make a web-sized copy. Returns img name or None."""
+    from PIL import Image
+    import io
+    dest_name = f"bundle-{b['slug']}-{i:02d}-web.jpg"
+    dest = os.path.join(OUT, "images", dest_name)
+    if os.path.isfile(dest) and os.path.getmtime(dest) >= zip_mtime:
+        return dest_name
+    entry = _zip_match(zip_names, title)
+    if not entry:
+        print(f"WARN: no ZIP master for bundle design: {title}")
+        return None
+    im = Image.open(io.BytesIO(zf.read(entry)))
+    if max(im.size) > MAX_WEB_PX:
+        im = im.resize((int(im.width * MAX_WEB_PX / max(im.size)),
+                        int(im.height * MAX_WEB_PX / max(im.size))), Image.LANCZOS)
+    if im.mode in ("RGBA", "LA"):
+        bg = Image.new("RGB", im.size, (255, 255, 255))
+        bg.paste(im, mask=im.split()[-1])
+        im = bg
+    elif im.mode != "RGB":
+        im = im.convert("RGB")
+    im.save(dest, "JPEG", quality=82, optimize=True)
+    return dest_name
+
+
+def bundle_designs_resolved(b, design_idx):
+    """Resolve each of the bundle's 10 design titles to site pages; for
+    designs with no site page, extract a thumbnail from the bundle ZIP.
+    Returns list of (title, page_dir|None, img_name|None)."""
+    import zipfile
+    zf = None
+    zip_names = []
+    zip_mtime = 0
+    zip_path = os.path.join(BUNDLE_SRC, b["zip"]) if b["zip"] else ""
+    if os.path.isfile(zip_path):
+        zf = zipfile.ZipFile(zip_path)
+        zip_names = [n for n in zf.namelist() if not n.endswith("/")]
+        zip_mtime = os.path.getmtime(zip_path)
+    out = []
+    for i, title in enumerate(b["designs"], 1):
+        hit = resolve_bundle_design(title, design_idx)
+        if hit:
+            out.append((title, hit[0], hit[1]))
+        elif zf:
+            img = web_copy_bundle_thumb(b, i, title, zf, zip_names, zip_mtime)
+            out.append((title, None, img))
+        else:
+            print(f"WARN: bundle ZIP missing, cannot thumb: {title}")
+            out.append((title, None, None))
+    if zf:
+        zf.close()
+    return out
+
+
+def bundle_page(b, designs):
+    pdir = f"bundles/{b['slug']}/"
+    kofi_url = b["kofi"] or SHOP_URL
+    kofi_placeholder = not b["kofi"]
+    cover_img = web_copy_bundle_cover(b)
+    live = [(t, pg, img) for (t, pg, img) in designs if img]
+    cards = []
+    for t, pg, img in live:
+        inner = (f'<img src="{BASE_URL}images/{img}" alt="{esc(t)}" loading="lazy">'
+                 f'<div class="t">{esc(t)}</div>')
+        cards.append(f'<a class="card" href="{BASE_URL}{pg}">{inner}</a>' if pg
+                     else f'<div class="card">{inner}</div>')
+    missing = [t for (t, pg, img) in designs if not img]
+    missing_html = (f'<p style="font-size:.85rem;color:#a00">Artwork coming soon for: {esc(", ".join(missing))}</p>'
+                    if missing else "")
+    cta_note = ('<p style="font-size:.85rem;color:#666">🚧 The Ko-fi bundle listing is being published — this links the Ko-fi shop for now.</p>'
+                if kofi_placeholder else "")
+    tags_html = (f'<p style="font-size:.85rem;color:#666">Tags: {esc(", ".join(b["tags"][:15]))}</p>'
+                 if b["tags"] else "")
+    body = f"""<main class="wrap">
+<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}bundles/">$16 Bundles</a> › {esc(b['title'])}</p>
+<div class="product">
+<div><img src="{(BASE_URL + 'images/' + cover_img) if cover_img else ''}" alt="{esc(b['title'])}"></div>
+<div>
+<h1>{esc(b['title'])}</h1>
+<p class="price">{pfmt(BUNDLE_PRICE)} <span style="font-size:.9rem;color:#666;font-weight:400">USD · fixed price</span></p>
+<p><a class="btn" href="{esc(kofi_url)}" rel="noopener">Get the bundle on Ko-fi — $16</a></p>
+{cta_note}
+<ul class="tick"><li>{len(live)} designs, one price — save vs. buying the $2 singles</li><li>Instant ZIP download on Ko-fi</li><li>Full-resolution masters, original art by Odd Jack O.M.T.</li><li>Personal use only</li></ul>
+<p>{esc(b['description'])}</p>
+{tags_html}
+</div>
+</div>
+<h2>What's inside</h2>
+<div class="grid">{"".join(cards)}</div>
+{missing_html}
+</main>"""
+    ld = jsonld(b["title"], b["description"] or b["title"], cover_img or "",
+                BUNDLE_PRICE, kofi_url)
+    return head(f"{b['title']} — $16 Bundle | Odd-jack",
+                meta_desc(b["description"] or b["title"]), pdir, cover_img, ld) + body + FOOTER
+
+
+def bundles_hub_page(bundles):
+    if bundles:
+        cards = "".join(
+            f'<a class="card" href="{BASE_URL}bundles/{b["slug"]}/">'
+            f'<img src="{BASE_URL}images/bundle-{b["slug"]}-cover.jpg" alt="{esc(b["title"])}" loading="lazy">'
+            f'<div class="t">{esc(b["title"])}</div>'
+            f'<div class="p">{pfmt(BUNDLE_PRICE)} · {len(b["designs"])} designs</div></a>'
+            for b in bundles)
+        intro = ("<p>Bundle up and save. Each pack groups 10 designs into one $16 instant download "
+                 "on Ko-fi — less than the cost of the $2 singles bought separately.</p>")
+    else:
+        cards = ""
+        intro = ("<p>🚧 Our $16 bundle packs are being assembled right now — 10 designs per bundle, "
+                 "one flat price. Check back soon.</p>")
+    body = f"""<div class="hero"><div class="wrap">
+<h1>🎁 $16 Bundle Packs</h1>
+<p>Ten designs. One price. Every bundle is a $16 instant download on Ko-fi.</p>
+<p><a class="btn" href="{SHOP_URL}" rel="noopener">Browse the Ko-fi shop</a></p>
+</div></div>
+<main class="wrap">
+{intro}
+<div class="grid">{cards}</div>
+</main>"""
+    desc = "Odd-jack $16 bundle packs: 10 designs per bundle as one instant download on Ko-fi. Morbid quotes, Halloween kitties, Halloween animals, Christmas & kawaii bundles."
+    return head("$16 Bundle Packs | Odd-jack", desc, "bundles/",
+                f"bundle-{bundles[0]['slug']}-cover.jpg" if bundles else None) + body + FOOTER
+
+
+def build_bundles(pages):
+    bundles = load_bundles()
+    design_idx = build_design_index()
+    write("bundles/index.html", bundles_hub_page(bundles)); pages.append(("bundles/", "0.9"))
+    n_thumb = 0
+    for b in bundles:
+        designs = bundle_designs_resolved(b, design_idx)
+        n_thumb += sum(1 for (_, pg, _) in designs if pg is None)
+        pdir = f"bundles/{b['slug']}/"
+        write(pdir + "index.html", bundle_page(b, designs))
+        pages.append((pdir, "0.7"))
+    print(f"Bundles: {len(bundles)} bundle pages ({n_thumb} ZIP-extracted thumbnails)")
+
 EXP_ITEMS = []
 DAILY_ITEMS = []
+MORBID_ITEMS = []
 # ---------------- build ----------------
 ITEMS = load_manifests()
 
@@ -759,10 +1251,11 @@ def write(path, content):
         f.write(content)
 
 def main():
-    global ITEMS, EXP_ITEMS, DAILY_ITEMS
+    global ITEMS, EXP_ITEMS, DAILY_ITEMS, MORBID_ITEMS
     ITEMS = load_manifests()
     EXP_ITEMS = load_expansion()
     DAILY_ITEMS = load_daily()
+    MORBID_ITEMS = load_morbid()
     os.makedirs(f"{OUT}/images", exist_ok=True)
     # copy images
     missing = []
@@ -783,6 +1276,8 @@ def main():
         web_copy_image(it)
     for it in DAILY_ITEMS:
         web_copy_daily(it)
+    for it in MORBID_ITEMS:
+        web_copy_morbid(it)
 
     pages = []  # (path, priority)
     write("index.html", homepage()); pages.append(("", "1.0"))
@@ -796,25 +1291,25 @@ def main():
     cats = [
         ("halloween/", "70 Halloween Cat Art Designs — Spooky Cute Kitties",
          "70 Halloween Cat Art Designs — Spooky Cute Kitties | Odd-jack",
-         "Shop 70 spooky-cute Halloween cat art designs: ghost kitties, witch cats, pumpkin patch art & haunted Halloween wallpapers. $3.50 instant downloads.",
+         "Shop 70 spooky-cute Halloween cat art designs: ghost kitties, witch cats, pumpkin patch art & haunted Halloween wallpapers. $2 instant downloads.",
          ["Looking for the cutest Halloween cat art on the internet? You've found it. This collection packs 70 original spooky-cute kitty designs — from Ghost Ship Kitty sailing haunted seas to Pumpkin Spice Latte Kitty sipping fall's favorite drink.",
-          "Every design is a $3.50 instant download on Ko-fi. Use them as Halloween phone wallpapers, print them as October wall art, or turn them into stickers for your laptop and water bottle. New Halloween drops land weekly, so check back often — or follow the Ko-fi shop to get notified."],
+          "Every design is a $2 instant download on Ko-fi. Use them as Halloween phone wallpapers, print them as October wall art, or turn them into stickers for your laptop and water bottle. New Halloween drops land weekly, so check back often — or follow the Ko-fi shop to get notified."],
          ITEMS),
         ("cat-wallpapers/", "Kawaii Cat Phone Wallpapers — Cute Cat Backgrounds",
          "Kawaii Cat Phone Wallpapers — Cute Cat Backgrounds | Odd-jack",
-         "Cute kawaii cat phone wallpapers: Halloween kitties, elemental cats & more. Vertical high-res backgrounds, $3.50 instant downloads.",
+         "Cute kawaii cat phone wallpapers: Halloween kitties, elemental cats & more. Vertical high-res backgrounds, $2 instant downloads.",
          ["Give your phone a glow-up with kawaii cat wallpapers. Every Odd-jack design is drawn in tall vertical format made for phone screens — Halloween kitties, elemental cats, and spooky-cute scenes that look sharp on any lock screen.",
-          "Each wallpaper is a $3.50 instant download: buy once, keep forever, swap whenever the mood strikes. Looking for autumn vibes? Start with the Halloween collection below."],
+          "Each wallpaper is a $2 instant download: buy once, keep forever, swap whenever the mood strikes. Looking for autumn vibes? Start with the Halloween collection below."],
          ITEMS),
         ("printable-wall-art/", "Printable Cat Wall Art — Cute Halloween Prints",
          "Printable Cat Wall Art — Cute Halloween Prints | Odd-jack",
-         "Printable cute cat wall art: high-res Halloween kitty prints ready to download, print & frame. $3.50 instant downloads by Odd-jack.",
+         "Printable cute cat wall art: high-res Halloween kitty prints ready to download, print & frame. $2 instant downloads by Odd-jack.",
          ["Decorate for spooky season (or all year) with printable cat wall art. These high-resolution designs print beautifully at home or at any print shop — frame a single statement piece or build a whole gallery wall of kitties.",
-          "Every print is a $3.50 instant download with personal-use rights. Browse the full Halloween collection below and find your new favorite wall."],
+          "Every print is a $2 instant download with personal-use rights. Browse the full Halloween collection below and find your new favorite wall."],
          ITEMS),
         ("sticker-art/", "Cute Cat Sticker Art — Kawaii Sticker Designs",
          "Cute Cat Sticker Art — Kawaii Sticker Designs | Odd-jack",
-         "Kawaii cat sticker art: cute Halloween & everyday kitty designs made for sticker printing. $3.50 instant downloads.",
+         "Kawaii cat sticker art: cute Halloween & everyday kitty designs made for sticker printing. $2 instant downloads.",
          ["Stickers make everything better, and these kawaii cat designs were born for it. Download any design and print it on sticker paper at home, or upload it to your favorite sticker printing service for pro-quality vinyl stickers.",
           "Laptops, water bottles, journals, phone cases — stick a spooky-cute kitty on all of it. Start with the dedicated sticker pack or pick any Halloween design below."],
          ITEMS),
@@ -828,6 +1323,12 @@ def main():
 
     # daily drops: hub + item pages
     build_daily(pages)
+
+    # morbid quotes: hub + 62 item pages
+    build_morbid(pages)
+
+    # $16 bundles: hub + per-bundle pages from bundles-16usd.md
+    build_bundles(pages)
 
     # sitemap
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
