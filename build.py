@@ -4,6 +4,7 @@ import json, os, re, shutil, html, datetime
 
 BASE_URL = "https://oddjack0.github.io/oddjack-art/"
 SHOP_URL = "https://ko-fi.com/oddjack/shop"
+RB_SHOP = "https://www.redbubble.com/people/Odd-jack/shop"
 SRC = os.path.expanduser("~/workspace/kofi-challenge")
 OUT = os.path.dirname(os.path.abspath(__file__))
 TODAY = "2026-10-02"
@@ -82,23 +83,73 @@ def meta_desc(text):
     t = re.sub(r"\s+", " ", t).strip()
     return t if len(t) <= 155 else t[:152].rsplit(" ", 1)[0] + "…"
 
-CSS = """*{box-sizing:border-box}body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;color:#2b2118;background:#fff8f1;line-height:1.6}
-header{background:#1d1030;color:#fff;padding:.9rem 1rem}header .wrap{display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto}
-.logo{color:#ffb347;font-weight:800;font-size:1.25rem;text-decoration:none}nav a{color:#fff;margin-left:1rem;text-decoration:none;font-size:.95rem}nav a:hover{text-decoration:underline}
-.wrap{max-width:1100px;margin:0 auto;padding:0 1rem}.hero{background:linear-gradient(135deg,#1d1030,#5b2a86);color:#fff;padding:3rem 1rem;text-align:center}
-.hero h1{font-size:2rem;margin:0 0 .5rem}.hero p{max-width:640px;margin:0 auto 1.2rem;color:#f3e8ff}
-.btn{display:inline-block;background:#ff6b35;color:#fff;font-weight:700;padding:.7rem 1.4rem;border-radius:8px;text-decoration:none;margin:.25rem}
-.btn:hover{background:#e55a28}.btn.alt{background:transparent;border:2px solid #fff}
-h2{margin-top:2.2rem}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin:1rem 0 2rem}
-.card{background:#fff;border:1px solid #eee;border-radius:10px;overflow:hidden;text-decoration:none;color:inherit}
-.card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block}.card .t{padding:.5rem .6rem;font-size:.85rem;font-weight:600}
-.card .p{padding:0 .6rem .6rem;color:#ff6b35;font-weight:700;font-size:.85rem}
-.product{display:grid;grid-template-columns:1fr;gap:1.5rem;margin:1.5rem 0}@media(min-width:760px){.product{grid-template-columns:minmax(0,5fr) minmax(0,6fr)}}
-.product img{width:100%;border-radius:12px}.price{font-size:1.6rem;font-weight:800;color:#ff6b35}
-ul.tick{list-style:none;padding:0}ul.tick li::before{content:"✓ ";color:#2e9e5b;font-weight:700}
-footer{background:#1d1030;color:#cbbde0;padding:2rem 1rem;margin-top:3rem;font-size:.9rem}footer a{color:#ffb347}
-.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin:1.5rem 0}
-.catcard{background:#fff;border:1px solid #eee;border-radius:10px;padding:1.2rem;text-decoration:none;color:inherit}.catcard h3{margin:.3rem 0;color:#5b2a86}"""
+CSS = """*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;margin:0;color:#f0edff;background:#0b0b12;line-height:1.6}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:.01em;color:#fff}
+a{color:#5ce1ff}
+header{position:sticky;top:0;z-index:50;background:rgba(11,11,18,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #23232f;padding:.85rem 1rem}
+header .wrap{display:flex;justify-content:space-between;align-items:center;max-width:1120px;margin:0 auto;gap:.8rem;flex-wrap:wrap}
+.logo{font-family:Georgia,"Times New Roman",serif;font-size:1.2rem;letter-spacing:4px;font-weight:700;text-decoration:none;background:linear-gradient(90deg,#ff3bd4,#7c5cff);-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+nav{display:flex;gap:1.1rem;align-items:center;flex-wrap:wrap}
+nav a{color:#b9b4d6;text-decoration:none;font-size:.9rem}
+nav a:hover{color:#fff}
+.wrap{max-width:1120px;margin:0 auto;padding:0 1.25rem}
+.hero{text-align:center;padding:4.5rem 1rem 3.5rem;background:radial-gradient(ellipse 65% 55% at 50% 0%,#1b1030 0%,#0b0b12 72%)}
+.hero .kick{font-size:.75rem;letter-spacing:5px;color:#8f89b3;text-transform:uppercase;margin:0 0 .9rem;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.05;margin:0 0 1rem}
+.hero h1 .grad{background:linear-gradient(90deg,#ff3bd4,#ffb13d,#5ce1ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:#a9a4c6;max-width:640px;margin:0 auto 1.4rem}
+.btn{display:inline-block;background:#22d3ee;border:1px solid #22d3ee;color:#06222a;font-weight:700;padding:.75rem 1.6rem;border-radius:999px;text-decoration:none;margin:.25rem;box-shadow:0 0 22px rgba(34,211,238,.45);transition:transform .15s ease,box-shadow .15s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(34,211,238,.65);color:#06222a}
+.btn.alt{background:transparent;border:1px solid #ff3bd4;color:#ff8ade;box-shadow:0 0 14px rgba(255,59,212,.3)}
+.btn.alt:hover{box-shadow:0 0 26px rgba(255,59,212,.55);color:#fff}
+.btn.rb{background:#ff3bd4;border-color:#ff3bd4;color:#14060f;box-shadow:0 0 22px rgba(255,59,212,.45)}
+.btn.rb:hover{box-shadow:0 0 32px rgba(255,59,212,.65);color:#14060f}
+.btn.sm{padding:.5rem 1.1rem;font-size:.85rem}
+.btns{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0}
+h2{margin-top:2.4rem;font-size:1.65rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.1rem;margin:1rem 0 2.5rem}
+.card{background:#14141d;border:1px solid #262633;border-radius:14px;overflow:hidden;text-decoration:none;color:#f0edff;display:flex;flex-direction:column;transition:transform .2s ease,border-color .2s ease}
+a.card:hover{transform:translateY(-4px);border-color:#ff3bd4}
+.card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#1d1d2b}
+.card .t{padding:.7rem .8rem .25rem;font-size:.88rem;font-weight:600}
+.card .p{padding:0 .8rem .85rem;color:#ff8ade;font-weight:700;font-size:.85rem}
+.product{display:grid;grid-template-columns:1fr;gap:2rem;margin:2rem 0}
+@media(min-width:760px){.product{grid-template-columns:minmax(0,5fr) minmax(0,6fr)}}
+.product img{width:100%;border-radius:14px;border:1px solid #262633;box-shadow:0 0 44px rgba(124,92,255,.18);background:#1d1d2b}
+.product h1{margin-top:0}
+.price{font-size:1.7rem;font-weight:800;color:#fff;font-family:Georgia,"Times New Roman",serif}
+.price .sub{font-size:.9rem;color:#8f89b3;font-weight:400;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+ul.tick{list-style:none;padding:0}
+ul.tick li{padding:.28rem 0;color:#c9c4e4}
+ul.tick li::before{content:"✓ ";color:#5ce1ff;font-weight:700}
+.crumb{font-size:.85rem;color:#8f89b3}
+.crumb a{color:#b9b4d6;text-decoration:none}
+.crumb a:hover{color:#fff}
+.note{font-size:.9rem;color:#a9a4c6;background:#14141d;border:1px solid #262633;border-radius:10px;padding:.7rem 1rem}
+.tags{font-size:.85rem;color:#8f89b3}
+.count{font-size:.8rem;color:#ff8ade;font-weight:700}
+.missing{font-size:.85rem;color:#ff9d9d}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.1rem;margin:1.5rem 0}
+.catcard{background:linear-gradient(135deg,#1b1030,#0f1c33);border:1px solid #33334d;border-radius:14px;padding:1.4rem;text-decoration:none;color:#f0edff;transition:transform .2s ease,border-color .2s ease}
+.catcard:hover{transform:translateY(-4px);border-color:#7c5cff}
+.catcard h3{margin:.3rem 0 .4rem;color:#fff;font-size:1.15rem}
+.catcard p{color:#a9a4c6;font-size:.92rem;margin:.35rem 0}
+.related-guides{margin:2rem 0;background:#14141d;border:1px solid #262633;border-radius:14px;padding:1.2rem 1.4rem}
+.related-guides h2{margin-top:0;font-size:1.2rem}
+.related-guides ul{margin:.4rem 0;padding-left:1.2rem}
+.related-guides li{margin:.3rem 0;color:#c9c4e4}
+footer{border-top:1px solid #23232f;margin-top:4rem;padding:2.5rem 1rem 0;font-size:.9rem;background:#0e0e16}
+footer .fgrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem;max-width:1120px;margin:0 auto}
+footer h4{font-size:.78rem;letter-spacing:2px;color:#8f89b3;text-transform:uppercase;margin:0 0 .8rem;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+footer p{color:#a9a4c6}
+footer a{color:#c9c4e4;text-decoration:none}
+footer a:hover{color:#fff}
+footer .fgrid a{display:block;margin-bottom:.55rem;font-size:.9rem}
+footer .fcta{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
+footer .fcta a{display:inline-block;margin-bottom:0}
+footer .copy{text-align:center;color:#5c5878;font-size:.8rem;margin:2rem 0 0;padding-bottom:1.5rem}
+@media(max-width:700px){footer .fgrid{grid-template-columns:1fr}.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}"""
 
 def head(title, desc, path, img=None, extra=""):
     url = BASE_URL + path
@@ -118,14 +169,24 @@ def head(title, desc, path, img=None, extra=""):
 <style>{CSS}</style>
 {extra}</head>
 <body>
-<header><div class="wrap"><a class="logo" href="{BASE_URL}">🎃 Odd-jack Art</a><nav><a href="{BASE_URL}halloween/">Halloween</a><a href="{BASE_URL}cat-wallpapers/">Wallpapers</a><a href="{BASE_URL}printable-wall-art/">Prints</a><a href="{BASE_URL}niches/">Niches</a><a href="{BASE_URL}daily/">Daily Drops</a><a href="{SHOP_URL}" rel="noopener">Ko-fi Shop</a></nav></div></header>
+<header><div class="wrap"><a class="logo" href="{BASE_URL}">ODD-JACK ART</a><nav><a href="{BASE_URL}halloween/">Halloween</a><a href="{BASE_URL}cat-wallpapers/">Wallpapers</a><a href="{BASE_URL}printable-wall-art/">Prints</a><a href="{BASE_URL}niches/">Niches</a><a href="{BASE_URL}daily/">Daily Drops</a><a href="{RB_SHOP}" rel="noopener">Redbubble</a><a href="{SHOP_URL}" rel="noopener">Ko-fi Shop</a></nav></div></header>
 """
 
-FOOTER = f"""<footer><div class="wrap">
-<p><strong>Odd-jack Art</strong> — cute kawaii cats, elemental kitties, psychedelic art &amp; spooky Halloween drops by Odd Jack O.M.T. Instant-download phone wallpapers, printable wall art &amp; sticker packs.</p>
-<p><a href="{SHOP_URL}" rel="noopener">Shop all designs on Ko-fi</a> · <a href="{BASE_URL}sitemap.xml">Sitemap</a></p>
-<p>© 2026 Odd-jack. All art is original. Personal use only.</p>
-</div></footer>
+FOOTER = f"""<footer><div class="wrap"><div class="fgrid">
+<div><h4>Odd-jack Art</h4>
+<p>Cute kawaii cats, elemental kitties, psychedelic art &amp; spooky Halloween drops by Odd Jack O.M.T. Instant-download phone wallpapers, printable wall art &amp; sticker packs.</p>
+<div class="fcta"><a class="btn sm" href="{SHOP_URL}" rel="noopener">Ko-fi Shop</a><a class="btn alt sm" href="{RB_SHOP}" rel="noopener">Redbubble</a></div></div>
+<div><h4>Shop</h4>
+<a href="{SHOP_URL}" rel="noopener">All designs on Ko-fi</a>
+<a href="{RB_SHOP}" rel="noopener">Merch on Redbubble</a>
+<a href="{BASE_URL}bundles/">$16 Bundle Packs</a>
+<a href="{BASE_URL}calendars/">2027 Wall Calendars</a></div>
+<div><h4>Explore</h4>
+<a href="{BASE_URL}niches/">Shop by Niche</a>
+<a href="{BASE_URL}daily/">Daily Drops</a>
+<a href="{BASE_URL}morbid-quotes/">Morbid Quotes</a>
+<a href="{BASE_URL}sitemap.xml">Sitemap</a></div>
+</div><p class="copy">© 2026 Odd-jack. All art is original. Personal use only.</p></div></footer>
 </body>
 </html>"""
 
@@ -150,12 +211,12 @@ def product_page(item):
     rel = [others[(item["num"] - 1 + i) % len(others)] for i in (1, 2, 3, 4)]
     rel_html = "".join(card(r, f"designs/{r['num']:02d}-{r['slug']}/") for r in rel)
     body = f"""<main class="wrap">
-<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}halloween/">Halloween Cat Art</a> › {esc(item['title'])}</p>
+<p class="crumb"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}halloween/">Halloween Cat Art</a> › {esc(item['title'])}</p>
 <div class="product">
 <div><img src="{img_url}" alt="{esc(item['title'])} digital download"></div>
 <div>
 <h1>{esc(item['title'])}</h1>
-<p class="price">{pfmt(item['price'])} <span style="font-size:.9rem;color:#666;font-weight:400">USD · fixed price</span></p>
+<p class="price">{pfmt(item['price'])} <span class="sub">USD · fixed price</span></p>
 {dual_cta(item["url"], RB_SHOP, kofi_live=True, rb_live=False)}
 <ul class="tick"><li>Instant $2 download on Ko-fi</li><li>Perfect as a phone wallpaper or printable wall art</li><li>Original art by Odd Jack O.M.T.</li><li>Also on Redbubble as tees, hoodies & stickers</li><li>Personal use only</li></ul>
 <p>{esc(item['description'])}</p>
@@ -170,12 +231,12 @@ def product_page(item):
 def pack_page(p):
     pdir = f"packs/{p['slug']}/"
     body = f"""<main class="wrap">
-<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › {esc(p['title'])}</p>
+<p class="crumb"><a href="{BASE_URL}">Home</a> › {esc(p['title'])}</p>
 <div class="product">
 <div><img src="{BASE_URL}images/{p['img']}" alt="{esc(p['title'])} digital download"></div>
 <div>
 <h1>{esc(p['title'])}</h1>
-<p class="price">{pfmt(p['price'])} <span style="font-size:.9rem;color:#666;font-weight:400">USD · instant download</span></p>
+<p class="price">{pfmt(p['price'])} <span class="sub">USD · instant download</span></p>
 <p><a class="btn" href="{SHOP_URL}" rel="noopener">Buy on Ko-fi</a></p>
 <ul class="tick"><li>Instant ZIP download</li><li>Original art by Odd Jack O.M.T.</li><li>Personal use only</li></ul>
 <p>{esc(p['description'])}</p>
@@ -191,7 +252,8 @@ def homepage():
     featured = [ITEMS[i - 1] for i in (2, 27, 25, 21, 70, 50, 45, 61)]
     feat = "".join(card(r, f"designs/{r['num']:02d}-{r['slug']}/") for r in featured)
     body = f"""<div class="hero"><div class="wrap">
-<h1>Halloween Cat Art &amp; Kawaii Cat Wallpapers</h1>
+<p class="kick">Instant-download art shop</p>
+<h1>Halloween Cat Art &amp; <span class="grad">Kawaii Cat Wallpapers</span></h1>
 <p>Adorable spooky kitties as instant-download phone wallpapers, printable wall art &amp; stickers. Every design just $2 — download on Ko-fi or grab it as merch on Redbubble.</p>
 <p><a class="btn" href="{SHOP_URL}" rel="noopener">Shop all designs on Ko-fi — $2 each</a> <a class="btn alt" href="{BASE_URL}halloween/">Browse Halloween cats</a></p>
 </div></div>
@@ -228,7 +290,7 @@ def category_page(path, h1, title, desc, intro_paras, items):
     grid = "".join(card(r, f"designs/{r['num']:02d}-{r['slug']}/") for r in items)
     intro = "".join(f"<p>{p}</p>" for p in intro_paras)
     body = f"""<main class="wrap">
-<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › {esc(h1)}</p>
+<p class="crumb"><a href="{BASE_URL}">Home</a> › {esc(h1)}</p>
 <h1>{esc(h1)}</h1>
 {intro}
 <div class="grid">{grid}</div>
@@ -237,7 +299,6 @@ def category_page(path, h1, title, desc, intro_paras, items):
     return head(title, desc, path, items[0]["img"] if items else None) + body + FOOTER
 
 # ---------------- niche expansion ----------------
-RB_SHOP = "https://www.redbubble.com/people/Odd-jack/shop"
 KOFI_HOME = "https://ko-fi.com/oddjack"
 # Direct Redbubble listing URLs, keyed (niche folder, design slug).
 # Source: niche-expansion/PUBLISHING-LOG.md (all 40 live as of 2026-09-21).
@@ -435,20 +496,20 @@ def expansion_product_page(item, all_items):
         btn_label = "Browse the Ko-fi shop"
     listed = item["price"] is not None or direct is not None
     if item["price"]:
-        price_html = (f'<p class="price">{pfmt(item["price"])} <span style="font-size:.9rem;color:#666;font-weight:400">USD · instant download</span></p>')
+        price_html = (f'<p class="price">{pfmt(item["price"])} <span class="sub">USD · instant download</span></p>')
     elif direct:
         price_html = '<p class="price">Available now</p>'
     else:
         price_html = '<p class="price">Coming soon</p>'
-    soon_html = (f'<p style="font-size:.9rem;color:#666">🚧 Coming soon to the shop — this design isn\'t listed yet. Follow the {shop_name} shop so you don\'t miss the drop.</p>'
+    soon_html = (f'<p class="note">🚧 Coming soon to the shop — this design isn\'t listed yet. Follow the {shop_name} shop so you don\'t miss the drop.</p>'
                  if not listed else "")
     specs = [b for b in (item.get("format"),
                          f"{item['page_count']} pages" if item.get("page_count") else None,
                          f"{item['template_count']} templates" if item.get("template_count") else None,
                          item.get("resolution")) if b]
-    specs_html = (f'<p style="font-size:.9rem;color:#555">Includes: {esc(" · ".join(specs))}</p>'
+    specs_html = (f'<p class="note">Includes: {esc(" · ".join(specs))}</p>'
                   if listed and specs else "")
-    note_html = (f'<p style="font-size:.9rem;color:#555">{esc(item["note"])}</p>'
+    note_html = (f'<p class="note">{esc(item["note"])}</p>'
                  if listed and item.get("note") else "")
     if is_rb and direct:
         ticks = ["Original apparel-ready graphic by Odd Jack O.M.T.",
@@ -467,12 +528,12 @@ def expansion_product_page(item, all_items):
                  "Original art & templates by Odd Jack O.M.T.",
                  "New drops land regularly — follow the shop"]
     tick_html = "".join(f"<li>{t}</li>" for t in ticks)
-    tags_html = (f'<p style="font-size:.85rem;color:#666">Tags: {esc(", ".join(item["tags"][:12]))}</p>'
+    tags_html = (f'<p class="tags">Tags: {esc(", ".join(item["tags"][:12]))}</p>'
                  if item["tags"] else "")
     same = [x for x in all_items if x["niche"] == n and x is not item][:4]
     rel_html = "".join(niche_card(r) for r in same)
     body = f"""<main class="wrap">
-<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}niches/">Shop by Niche</a> › <a href="{BASE_URL}niches/{n['slug']}/">{esc(n['name'])}</a> › {esc(item['title'])}</p>
+<p class="crumb"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}niches/">Shop by Niche</a> › <a href="{BASE_URL}niches/{n['slug']}/">{esc(n['name'])}</a> › {esc(item['title'])}</p>
 <div class="product">
 <div><img src="{BASE_URL}images/{item['img']}" alt="{esc(item['title'])}"></div>
 <div>
@@ -507,11 +568,11 @@ def niche_landing_page(n, items):
     grid = "".join(niche_card(it) for it in items)
     intro = "".join(f"<p>{p}</p>" for p in n["intros"])
     body = f"""<main class="wrap">
-<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}niches/">Shop by Niche</a> › {esc(n['name'])}</p>
+<p class="crumb"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}niches/">Shop by Niche</a> › {esc(n['name'])}</p>
 <h1>{n['emoji']} {esc(n['name'])}</h1>
 {intro}
 <div class="grid">{grid}</div>
-<p><a class="btn" href="{RB_SHOP if n['shop'] == 'redbubble' else KOFI_HOME}" rel="noopener">Browse the shop</a> <a class="btn alt" style="color:#5b2a86;border-color:#5b2a86" href="{BASE_URL}niches/">All niches</a></p>
+<p><a class="btn{' rb' if n['shop'] == 'redbubble' else ''}" href="{RB_SHOP if n['shop'] == 'redbubble' else KOFI_HOME}" rel="noopener">Browse the shop</a> <a class="btn alt" href="{BASE_URL}niches/">All niches</a></p>
 </main>"""
     return head(f"{n['name']} — {n['tagline']} | Odd-jack", n["seo"], pdir,
                 items[0]["img"] if items else None) + body + FOOTER
@@ -540,10 +601,10 @@ def niches_hub_page():
     for n in NICHES:
         count = niche_count_line(n)
         cards.append(f'<a class="catcard" href="{BASE_URL}niches/{n["slug"]}/"><h3>{n["emoji"]} {esc(n["name"])}</h3>'
-                     f'<p>{esc(n["tagline"])}</p><p style="font-size:.8rem;color:#ff6b35;font-weight:700">{count}</p></a>')
+                     f'<p>{esc(n["tagline"])}</p><p class="count">{count}</p></a>')
     for path, emoji, name, tag, count in existing:
         cards.append(f'<a class="catcard" href="{BASE_URL}{path}"><h3>{emoji} {esc(name)}</h3>'
-                     f'<p>{esc(tag)}</p><p style="font-size:.8rem;color:#ff6b35;font-weight:700">{count}</p></a>')
+                     f'<p>{esc(tag)}</p><p class="count">{count}</p></a>')
     body = f"""<div class="hero"><div class="wrap">
 <h1>Shop by Niche</h1>
 <p>Every Odd-jack collection in one place — spooky Halloween cats, blue-collar pride, faith apparel, angler humor, bookish tees, patriotic badges &amp; digital downloads.</p>
@@ -561,7 +622,7 @@ def niche_home_cards_html():
     for n in NICHES:
         count = niche_count_line(n)
         cards.append(f'<a class="catcard" href="{BASE_URL}niches/{n["slug"]}/"><h3>{n["emoji"]} {esc(n["name"])}</h3>'
-                     f'<p>{esc(n["tagline"])}</p><p style="font-size:.8rem;color:#ff6b35;font-weight:700">{count}</p></a>')
+                     f'<p>{esc(n["tagline"])}</p><p class="count">{count}</p></a>')
     return "".join(cards)
 
 
@@ -675,7 +736,7 @@ def dual_cta(kofi_url, rb_url, kofi_live=True, rb_live=True):
     kl = "Download on Ko-fi — $2" if kofi_live else "Browse the Ko-fi shop"
     rl = "Merch on Redbubble" if rb_live else "Browse the Redbubble shop"
     return (f'<p><a class="btn" href="{esc(kofi_url)}" rel="noopener">{kl}</a> '
-            f'<a class="btn alt" style="color:#5b2a86;border-color:#5b2a86" href="{esc(rb_url)}" rel="noopener">{rl}</a></p>')
+            f'<a class="btn alt" href="{esc(rb_url)}" rel="noopener">{rl}</a></p>')
 
 
 def daily_product_page(item, all_items):
@@ -685,14 +746,14 @@ def daily_product_page(item, all_items):
     btns = dual_cta(kofi_url, rb_url, kofi_live=bool(item["kofi_url"]),
                     rb_live=bool(item["rb_url"]))
     if item["kofi_url"] and item["rb_url"]:
-        price_html = (f'<p class="price">{pfmt(DAILY_PRICE)} <span style="font-size:.9rem;color:#666;font-weight:400">USD · fixed price</span></p>')
+        price_html = (f'<p class="price">{pfmt(DAILY_PRICE)} <span class="sub">USD · fixed price</span></p>')
         soon_html = ""
         ticks = ["Instant $2 download on Ko-fi",
                  "Original art by Odd Jack O.M.T.",
                  "Also on Redbubble tees, hoodies & stickers"]
     elif item["kofi_url"]:
-        price_html = (f'<p class="price">{pfmt(DAILY_PRICE)} <span style="font-size:.9rem;color:#666;font-weight:400">USD · fixed price</span></p>')
-        soon_html = '<p style="font-size:.9rem;color:#666">🚧 Redbubble merch for this design is still being uploaded — check the shop soon.</p>'
+        price_html = (f'<p class="price">{pfmt(DAILY_PRICE)} <span class="sub">USD · fixed price</span></p>')
+        soon_html = '<p class="note">🚧 Redbubble merch for this design is still being uploaded — check the shop soon.</p>'
         ticks = ["Instant $2 download on Ko-fi",
                  "Original art by Odd Jack O.M.T.",
                  "Personal use only"]
@@ -704,15 +765,15 @@ def daily_product_page(item, all_items):
                  "Ko-fi $2 download coming soon"]
     else:
         price_html = '<p class="price">Coming soon</p>'
-        soon_html = '<p style="font-size:.9rem;color:#666">🚧 Coming soon — this design is fresh out of the studio and isn\'t listed yet. Follow the shops so you don\'t miss the drop.</p>'
+        soon_html = '<p class="note">🚧 Coming soon — this design is fresh out of the studio and isn\'t listed yet. Follow the shops so you don\'t miss the drop.</p>'
         ticks = ["Original art by Odd Jack O.M.T.",
                  "New drops land regularly — follow the shops"]
-    tags_html = (f'<p style="font-size:.85rem;color:#666">Tags: {esc(", ".join(item["tags"][:12]))}</p>'
+    tags_html = (f'<p class="tags">Tags: {esc(", ".join(item["tags"][:12]))}</p>'
                  if item["tags"] else "")
     same = [x for x in all_items if x is not item][:4]
     rel_html = "".join(daily_card(r) for r in same)
     body = f"""<main class="wrap">
-<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}daily/">Daily Drops</a> › {esc(item['title'])}</p>
+<p class="crumb"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}daily/">Daily Drops</a> › {esc(item['title'])}</p>
 <div class="product">
 <div><img src="{BASE_URL}images/{item['img']}" alt="{esc(item['title'])}"></div>
 <div>
@@ -867,19 +928,19 @@ def morbid_product_page(item, all_items):
         soon_bits.append("🚧 The $2 Ko-fi download for this quote isn't live yet — browse the shop meanwhile.")
     if not item["rb_url"]:
         soon_bits.append("🚧 Redbubble merch for this quote is still being uploaded — check the shop soon.")
-    soon_html = "".join(f'<p style="font-size:.9rem;color:#666">{b}</p>' for b in soon_bits)
-    price_html = (f'<p class="price">{pfmt(item["price"])} <span style="font-size:.9rem;color:#666;font-weight:400">USD · fixed price</span></p>')
+    soon_html = "".join(f'<p class="note">{b}</p>' for b in soon_bits)
+    price_html = (f'<p class="price">{pfmt(item["price"])} <span class="sub">USD · fixed price</span></p>')
     ticks = ["Instant $2 download on Ko-fi",
              "Deadpan morbid humor by Odd Jack O.M.T.",
              "Also on Redbubble tees, hoodies & stickers",
              "Personal use only"]
-    tags_html = (f'<p style="font-size:.85rem;color:#666">Tags: {esc(", ".join(item["tags"][:12]))}</p>'
+    tags_html = (f'<p class="tags">Tags: {esc(", ".join(item["tags"][:12]))}</p>'
                  if item["tags"] else "")
     same = [x for x in all_items if x is not item]
     rel = [same[(item["num"] - 1 + i) % len(same)] for i in (1, 2, 3, 4)]
     rel_html = "".join(morbid_card(r) for r in rel)
     body = f"""<main class="wrap">
-<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}morbid-quotes/">Morbid Funny Quotes</a> › {esc(item['title'])}</p>
+<p class="crumb"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}morbid-quotes/">Morbid Funny Quotes</a> › {esc(item['title'])}</p>
 <div class="product">
 <div><img src="{BASE_URL}images/{item['img']}" alt="{esc(item['title'])}"></div>
 <div>
@@ -1167,19 +1228,19 @@ def bundle_page(b, designs):
         cards.append(f'<a class="card" href="{BASE_URL}{pg}">{inner}</a>' if pg
                      else f'<div class="card">{inner}</div>')
     missing = [t for (t, pg, img) in designs if not img]
-    missing_html = (f'<p style="font-size:.85rem;color:#a00">Artwork coming soon for: {esc(", ".join(missing))}</p>'
+    missing_html = (f'<p class="missing">Artwork coming soon for: {esc(", ".join(missing))}</p>'
                     if missing else "")
-    cta_note = ('<p style="font-size:.85rem;color:#666">🚧 The Ko-fi bundle listing is being published — this links the Ko-fi shop for now.</p>'
+    cta_note = ('<p class="tags">🚧 The Ko-fi bundle listing is being published — this links the Ko-fi shop for now.</p>'
                 if kofi_placeholder else "")
-    tags_html = (f'<p style="font-size:.85rem;color:#666">Tags: {esc(", ".join(b["tags"][:15]))}</p>'
+    tags_html = (f'<p class="tags">Tags: {esc(", ".join(b["tags"][:15]))}</p>'
                  if b["tags"] else "")
     body = f"""<main class="wrap">
-<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}bundles/">$16 Bundles</a> › {esc(b['title'])}</p>
+<p class="crumb"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}bundles/">$16 Bundles</a> › {esc(b['title'])}</p>
 <div class="product">
 <div><img src="{(BASE_URL + 'images/' + cover_img) if cover_img else ''}" alt="{esc(b['title'])}"></div>
 <div>
 <h1>{esc(b['title'])}</h1>
-<p class="price">{pfmt(BUNDLE_PRICE)} <span style="font-size:.9rem;color:#666;font-weight:400">USD · fixed price</span></p>
+<p class="price">{pfmt(BUNDLE_PRICE)} <span class="sub">USD · fixed price</span></p>
 <p><a class="btn" href="{esc(kofi_url)}" rel="noopener">Get the bundle on Ko-fi — $16</a></p>
 {cta_note}
 <ul class="tick"><li>{len(live)} designs, one price — save vs. buying the $2 singles</li><li>Instant ZIP download on Ko-fi</li><li>Full-resolution masters, original art by Odd Jack O.M.T.</li><li>Personal use only</li></ul>

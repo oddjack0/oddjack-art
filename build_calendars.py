@@ -32,30 +32,93 @@ MONTH_FILES = ["01-january.png", "02-february.png", "03-march.png", "04-april.pn
                "05-may.png", "06-june.png", "07-july.png", "08-august.png",
                "09-september.png", "10-october.png", "11-november.png", "12-december.png"]
 
-CSS = """*{box-sizing:border-box}body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;color:#2b2118;background:#fff8f1;line-height:1.6}
-header{background:#1d1030;color:#fff;padding:.9rem 1rem}header .wrap{display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto}
-.logo{color:#ffb347;font-weight:800;font-size:1.25rem;text-decoration:none}nav a{color:#fff;margin-left:1rem;text-decoration:none;font-size:.95rem}nav a:hover{text-decoration:underline}
-.wrap{max-width:1100px;margin:0 auto;padding:0 1rem}.hero{background:linear-gradient(135deg,#1d1030,#5b2a86);color:#fff;padding:3rem 1rem;text-align:center}
-.hero h1{font-size:2rem;margin:0 0 .5rem}.hero p{max-width:640px;margin:0 auto 1.2rem;color:#f3e8ff}
-.btn{display:inline-block;background:#ff6b35;color:#fff;font-weight:700;padding:.7rem 1.4rem;border-radius:8px;text-decoration:none;margin:.25rem}
-.btn:hover{background:#e55a28}.btn.alt{background:transparent;border:2px solid #fff}
-h2{margin-top:2.2rem}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin:1rem 0 2rem}
-.card{background:#fff;border:1px solid #eee;border-radius:10px;overflow:hidden;text-decoration:none;color:inherit}
-.card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}.card .t{padding:.5rem .6rem;font-size:.85rem;font-weight:600}
-.product{display:grid;grid-template-columns:1fr;gap:1.5rem;margin:1.5rem 0}@media(min-width:760px){.product{grid-template-columns:minmax(0,5fr) minmax(0,6fr)}}
-.product img{width:100%;border-radius:12px}.price{font-size:1.6rem;font-weight:800;color:#ff6b35}
-ul.tick{list-style:none;padding:0}ul.tick li::before{content:"\\2713 ";color:#2e9e5b;font-weight:700}
-footer{background:#1d1030;color:#cbbde0;padding:2rem 1rem;margin-top:3rem;font-size:.9rem}footer a{color:#ffb347}"""
+CSS = """*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;margin:0;color:#f0edff;background:#0b0b12;line-height:1.6}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:.01em;color:#fff}
+a{color:#5ce1ff}
+header{position:sticky;top:0;z-index:50;background:rgba(11,11,18,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #23232f;padding:.85rem 1rem}
+header .wrap{display:flex;justify-content:space-between;align-items:center;max-width:1120px;margin:0 auto;gap:.8rem;flex-wrap:wrap}
+.logo{font-family:Georgia,"Times New Roman",serif;font-size:1.2rem;letter-spacing:4px;font-weight:700;text-decoration:none;background:linear-gradient(90deg,#ff3bd4,#7c5cff);-webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+nav{display:flex;gap:1.1rem;align-items:center;flex-wrap:wrap}
+nav a{color:#b9b4d6;text-decoration:none;font-size:.9rem}
+nav a:hover{color:#fff}
+.wrap{max-width:1120px;margin:0 auto;padding:0 1.25rem}
+.hero{text-align:center;padding:4.5rem 1rem 3.5rem;background:radial-gradient(ellipse 65% 55% at 50% 0%,#1b1030 0%,#0b0b12 72%)}
+.hero .kick{font-size:.75rem;letter-spacing:5px;color:#8f89b3;text-transform:uppercase;margin:0 0 .9rem;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.05;margin:0 0 1rem}
+.hero h1 .grad{background:linear-gradient(90deg,#ff3bd4,#ffb13d,#5ce1ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:#a9a4c6;max-width:640px;margin:0 auto 1.4rem}
+.btn{display:inline-block;background:#22d3ee;border:1px solid #22d3ee;color:#06222a;font-weight:700;padding:.75rem 1.6rem;border-radius:999px;text-decoration:none;margin:.25rem;box-shadow:0 0 22px rgba(34,211,238,.45);transition:transform .15s ease,box-shadow .15s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(34,211,238,.65);color:#06222a}
+.btn.alt{background:transparent;border:1px solid #ff3bd4;color:#ff8ade;box-shadow:0 0 14px rgba(255,59,212,.3)}
+.btn.alt:hover{box-shadow:0 0 26px rgba(255,59,212,.55);color:#fff}
+.btn.rb{background:#ff3bd4;border-color:#ff3bd4;color:#14060f;box-shadow:0 0 22px rgba(255,59,212,.45)}
+.btn.rb:hover{box-shadow:0 0 32px rgba(255,59,212,.65);color:#14060f}
+.btn.sm{padding:.5rem 1.1rem;font-size:.85rem}
+.btns{display:flex;gap:.6rem;flex-wrap:wrap;margin:1rem 0}
+h2{margin-top:2.4rem;font-size:1.65rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.1rem;margin:1rem 0 2.5rem}
+.card{background:#14141d;border:1px solid #262633;border-radius:14px;overflow:hidden;text-decoration:none;color:#f0edff;display:flex;flex-direction:column;transition:transform .2s ease,border-color .2s ease}
+a.card:hover{transform:translateY(-4px);border-color:#ff3bd4}
+.card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#1d1d2b}
+.card .t{padding:.7rem .8rem .25rem;font-size:.88rem;font-weight:600}
+.card .p{padding:0 .8rem .85rem;color:#ff8ade;font-weight:700;font-size:.85rem}
+.product{display:grid;grid-template-columns:1fr;gap:2rem;margin:2rem 0}
+@media(min-width:760px){.product{grid-template-columns:minmax(0,5fr) minmax(0,6fr)}}
+.product img{width:100%;border-radius:14px;border:1px solid #262633;box-shadow:0 0 44px rgba(124,92,255,.18);background:#1d1d2b}
+.product h1{margin-top:0}
+.price{font-size:1.7rem;font-weight:800;color:#fff;font-family:Georgia,"Times New Roman",serif}
+.price .sub{font-size:.9rem;color:#8f89b3;font-weight:400;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+ul.tick{list-style:none;padding:0}
+ul.tick li{padding:.28rem 0;color:#c9c4e4}
+ul.tick li::before{content:"✓ ";color:#5ce1ff;font-weight:700}
+.crumb{font-size:.85rem;color:#8f89b3}
+.crumb a{color:#b9b4d6;text-decoration:none}
+.crumb a:hover{color:#fff}
+.note{font-size:.9rem;color:#a9a4c6;background:#14141d;border:1px solid #262633;border-radius:10px;padding:.7rem 1rem}
+.tags{font-size:.85rem;color:#8f89b3}
+.count{font-size:.8rem;color:#ff8ade;font-weight:700}
+.missing{font-size:.85rem;color:#ff9d9d}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.1rem;margin:1.5rem 0}
+.catcard{background:linear-gradient(135deg,#1b1030,#0f1c33);border:1px solid #33334d;border-radius:14px;padding:1.4rem;text-decoration:none;color:#f0edff;transition:transform .2s ease,border-color .2s ease}
+.catcard:hover{transform:translateY(-4px);border-color:#7c5cff}
+.catcard h3{margin:.3rem 0 .4rem;color:#fff;font-size:1.15rem}
+.catcard p{color:#a9a4c6;font-size:.92rem;margin:.35rem 0}
+.related-guides{margin:2rem 0;background:#14141d;border:1px solid #262633;border-radius:14px;padding:1.2rem 1.4rem}
+.related-guides h2{margin-top:0;font-size:1.2rem}
+.related-guides ul{margin:.4rem 0;padding-left:1.2rem}
+.related-guides li{margin:.3rem 0;color:#c9c4e4}
+footer{border-top:1px solid #23232f;margin-top:4rem;padding:2.5rem 1rem 0;font-size:.9rem;background:#0e0e16}
+footer .fgrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem;max-width:1120px;margin:0 auto}
+footer h4{font-size:.78rem;letter-spacing:2px;color:#8f89b3;text-transform:uppercase;margin:0 0 .8rem;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+footer p{color:#a9a4c6}
+footer a{color:#c9c4e4;text-decoration:none}
+footer a:hover{color:#fff}
+footer .fgrid a{display:block;margin-bottom:.55rem;font-size:.9rem}
+footer .fcta{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
+footer .fcta a{display:inline-block;margin-bottom:0}
+footer .copy{text-align:center;color:#5c5878;font-size:.8rem;margin:2rem 0 0;padding-bottom:1.5rem}
+@media(max-width:700px){footer .fgrid{grid-template-columns:1fr}.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}"""
 
-NAV = (f'<header><div class="wrap"><a class="logo" href="{BASE_URL}">🎃 Odd-jack Art</a><nav>'
+NAV = (f'<header><div class="wrap"><a class="logo" href="{BASE_URL}">ODD-JACK ART</a><nav>'
        f'<a href="{BASE_URL}halloween/">Halloween</a><a href="{BASE_URL}cat-wallpapers/">Wallpapers</a>'
        f'<a href="{BASE_URL}printable-wall-art/">Prints</a><a href="{BASE_URL}niches/">Niches</a>'
-       f'<a href="{BASE_URL}daily/">Daily Drops</a><a href="https://ko-fi.com/oddjack/shop" rel="noopener">Ko-fi Shop</a>'
+       f'<a href="{BASE_URL}daily/">Daily Drops</a>'
+       f'<a href="https://www.redbubble.com/people/Odd-jack/shop" rel="noopener">Redbubble</a>'
+       f'<a href="https://ko-fi.com/oddjack/shop" rel="noopener">Ko-fi Shop</a>'
        f'</nav></div></header>')
-FOOTER = (f'<footer><div class="wrap"><p><strong>Odd-jack Art</strong> — cute kawaii cats, elemental kitties, '
+FOOTER = (f'<footer><div class="wrap"><div class="fgrid">'
+          f'<div><h4>Odd-jack Art</h4><p>Cute kawaii cats, elemental kitties, '
           f'psychedelic art &amp; spooky Halloween drops by Odd Jack O.M.T. Instant-download phone wallpapers, printable wall art &amp; sticker packs.</p>'
-          f'<p><a href="https://ko-fi.com/oddjack/shop" rel="noopener">Shop all designs on Ko-fi</a> · '
-          f'<a href="{BASE_URL}sitemap.xml">Sitemap</a></p><p>© 2026 Odd-jack. All art is original. Personal use only.</p></div></footer>')
+          f'<div class="fcta"><a class="btn sm" href="https://ko-fi.com/oddjack/shop" rel="noopener">Ko-fi Shop</a>'
+          f'<a class="btn alt sm" href="https://www.redbubble.com/people/Odd-jack/shop" rel="noopener">Redbubble</a></div></div>'
+          f'<div><h4>Shop</h4><a href="https://ko-fi.com/oddjack/shop" rel="noopener">All designs on Ko-fi</a>'
+          f'<a href="https://www.redbubble.com/people/Odd-jack/shop" rel="noopener">Merch on Redbubble</a>'
+          f'<a href="{BASE_URL}bundles/">$16 Bundle Packs</a><a href="{BASE_URL}calendars/">2027 Wall Calendars</a></div>'
+          f'<div><h4>Explore</h4><a href="{BASE_URL}niches/">Shop by Niche</a>'
+          f'<a href="{BASE_URL}daily/">Daily Drops</a><a href="{BASE_URL}morbid-quotes/">Morbid Quotes</a>'
+          f'<a href="{BASE_URL}sitemap.xml">Sitemap</a></div>'
+          f'</div><p class="copy">© 2026 Odd-jack. All art is original. Personal use only.</p></div></footer>')
 
 def esc(s): return html.escape(s, quote=True)
 
@@ -80,16 +143,16 @@ def build_calendar_page(cal):
         f'<div class="card"><img src="{BASE_URL}images/{w}" alt="{esc(cal["title"])} — {m}" loading="lazy">'
         f'<div class="t">{m} 2027</div></div>' for w, m in month_imgs)
     body = f"""<main class="wrap">
-<p style="font-size:.85rem"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}calendars/">2027 Calendars</a> › {esc(cal['title'])}</p>
+<p class="crumb"><a href="{BASE_URL}">Home</a> › <a href="{BASE_URL}calendars/">2027 Calendars</a> › {esc(cal['title'])}</p>
 <div class="product">
 <div><img src="{BASE_URL}images/{cover_web}" alt="{esc(cal['title'])}"></div>
 <div>
 <h1>{esc(cal['title'])}</h1>
-<p class="price">$8.00 <span style="font-size:.9rem;color:#666;font-weight:400">USD · fixed price</span></p>
+<p class="price">$8.00 <span class="sub">USD · fixed price</span></p>
 <p><a class="btn" href="{cal['kofi']}" rel="noopener">Get it on Ko-fi — $8</a></p>
 <ul class="tick"><li>25 pages at 300 DPI — 12 full-page illustrations + 12 monthly date grids</li><li>12×12 inch wall calendar format, US holidays marked</li><li>Instant PDF download on Ko-fi</li><li>Original art by Odd Jack O.M.T. — personal use only</li></ul>
 <p>{esc(cal['blurb'])} Print at home or at a print shop and hang the whole year.</p>
-<p style="font-size:.85rem;color:#666">Tags: {esc(cal['tags'])}</p>
+<p class="tags">Tags: {esc(cal['tags'])}</p>
 </div>
 </div>
 <h2>All 12 months</h2>
@@ -129,10 +192,9 @@ def build_hub(urls):
             f"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
             f"<title>2027 Wall Calendars — Printable PDF Calendars | Odd-jack</title>\n"
             f"<meta name=\"description\" content=\"Printable 2027 wall calendars by Odd-jack: grumpy cats, gothmas cats, cute animals and dogs. 25-page PDFs, instant download.\">\n"
-            f"<link rel=\"canonical\" href=\"{BASE_URL}calendars/\">\n<style>{CSS}\n"
-            f".card .p{{padding:0 .6rem .6rem;color:#ff6b35;font-weight:700;font-size:.85rem}}</style></head>\n"
+            f"<link rel=\"canonical\" href=\"{BASE_URL}calendars/\">\n<style>{CSS}</style></head>\n"
             f"<body>\n{NAV}\n<main class=\"wrap\">\n"
-            f"<p style=\"font-size:.85rem\"><a href=\"{BASE_URL}\">Home</a> › 2027 Calendars</p>\n"
+            f"<p class=\"crumb\"><a href=\"{BASE_URL}\">Home</a> › 2027 Calendars</p>\n"
             f"<h1>2027 Wall Calendars</h1>\n"
             f"<p>Printable 12×12\" wall calendars — 25 pages each at 300 DPI, 12 full-page illustrations plus monthly date grids with US holidays. Instant PDF download on Ko-fi, $8 each.</p>\n"
             f"<div class=\"grid\">{cards}</div>\n</main>{FOOTER}\n</body>\n</html>")
