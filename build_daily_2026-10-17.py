@@ -34,8 +34,8 @@ DESIGNS = [
 
 # Filled in from the publisher run results (edit before running)
 URLS = {
-    "2026-10-17-i-yam-what-i-yam": {"rb": "https://www.redbubble.com/shop/ap/184807646", "kofi": None},
-    "2026-10-17-salt-butter-attitude": {"rb": "https://www.redbubble.com/shop/ap/184807692", "kofi": None},
+    "2026-10-17-i-yam-what-i-yam": {"rb": "https://www.redbubble.com/shop/ap/184807646", "kofi": "https://ko-fi.com/s/be70c9265f"},
+    "2026-10-17-salt-butter-attitude": {"rb": "https://www.redbubble.com/shop/ap/184807692", "kofi": "https://ko-fi.com/s/0119f0358d"},
     "2026-10-17-healing-era": {"rb": "https://www.redbubble.com/shop/ap/184807748", "kofi": "https://ko-fi.com/s/134a3a79d3"},
 }
 
