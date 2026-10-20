@@ -34,9 +34,9 @@ DESIGNS = [
 
 # Filled in from the publisher run results (edit before running)
 URLS = {
-    "2026-10-20-dont-eat-me-i-have-plans": {"rb": None, "kofi": None},
-    "2026-10-20-thankful-for-naps-not-for-you": {"rb": None, "kofi": None},
-    "2026-10-20-seat-me-by-the-pie-not-the-in-laws": {"rb": None, "kofi": None},
+    "2026-10-20-dont-eat-me-i-have-plans": {"rb": "https://www.redbubble.com/shop/ap/184885995", "kofi": "https://ko-fi.com/s/1d412ffb93"},
+    "2026-10-20-thankful-for-naps-not-for-you": {"rb": "https://www.redbubble.com/shop/ap/184886050", "kofi": "https://ko-fi.com/s/6a17cf4cbb"},
+    "2026-10-20-seat-me-by-the-pie-not-the-in-laws": {"rb": "https://www.redbubble.com/shop/ap/184886107", "kofi": "https://ko-fi.com/s/d48faeb31a"},
 }
 
 for d in DESIGNS:
