@@ -140,7 +140,7 @@ ul.tick li::before{content:"✓ ";color:#5ce1ff;font-weight:700}
 .related-guides ul{margin:.4rem 0;padding-left:1.2rem}
 .related-guides li{margin:.3rem 0;color:#c9c4e4}
 footer{border-top:1px solid #23232f;margin-top:4rem;padding:2.5rem 1rem 0;font-size:.9rem;background:#0e0e16}
-footer .fgrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem;max-width:1120px;margin:0 auto}
+footer .fgrid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;max-width:1120px;margin:0 auto}
 footer h4{font-size:.78rem;letter-spacing:2px;color:#8f89b3;text-transform:uppercase;margin:0 0 .8rem;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 footer p{color:#a9a4c6}
 footer a{color:#c9c4e4;text-decoration:none}
@@ -186,6 +186,12 @@ FOOTER = f"""<footer><div class="wrap"><div class="fgrid">
 <a href="{BASE_URL}daily/">Daily Drops</a>
 <a href="{BASE_URL}morbid-quotes/">Morbid Quotes</a>
 <a href="{BASE_URL}sitemap.xml">Sitemap</a></div>
+<div><h4>More from Odd-jack</h4>
+<a href="https://oddjack0.github.io/printpaw-studio/" rel="noopener">PrintPaw Studio — Printables</a>
+<a href="https://oddjack0.github.io/tinytools-lab/" rel="noopener">TinyTools Lab — Free Tools</a>
+<a href="https://oddjack0.github.io/happypup-guide/" rel="noopener">HappyPup Guide — Dog Care</a>
+<a href="https://oddjack0.github.io/promptpantry/" rel="noopener">PromptPantry — AI Prompts</a>
+<a href="https://oddjack0.github.io/templateforge/" rel="noopener">TemplateForge — Templates</a></div>
 </div><p class="copy">© 2026 Odd-jack. All art is original. Personal use only.</p></div></footer>
 </body>
 </html>"""
