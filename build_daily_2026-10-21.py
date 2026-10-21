@@ -36,9 +36,9 @@ DESIGNS = [
 
 # Filled in from the publisher run results (edit before running the second time)
 URLS = {
-    "2026-10-21-gravy-guard-grumpy-cat-on-potato-patrol": {"rb": "https://www.redbubble.com/shop/ap/184914931", "kofi": None},
-    "2026-10-21-premium-snack-vault-pie-protecting-raccoon": {"rb": "https://www.redbubble.com/shop/ap/184915004", "kofi": None},
-    "2026-10-21-leftover-negotiator-grumpy-hamster-hogs-the-sides": {"rb": "https://www.redbubble.com/shop/ap/184915073", "kofi": None},
+    "2026-10-21-gravy-guard-grumpy-cat-on-potato-patrol": {"rb": "https://www.redbubble.com/shop/ap/184914931", "kofi": "https://ko-fi.com/s/2e3b619f72"},
+    "2026-10-21-premium-snack-vault-pie-protecting-raccoon": {"rb": "https://www.redbubble.com/shop/ap/184915004", "kofi": "https://ko-fi.com/s/a75f27d370"},
+    "2026-10-21-leftover-negotiator-grumpy-hamster-hogs-the-sides": {"rb": "https://www.redbubble.com/shop/ap/184915073", "kofi": "https://ko-fi.com/s/0bdc4030b7"},
 }
 
 for d in DESIGNS:
