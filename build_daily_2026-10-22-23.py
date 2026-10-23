@@ -75,9 +75,9 @@ DESIGNS = [
 
 # Filled in from the publisher run results (edit before re-running the second time)
 URLS = {
-    "2026-10-23-sous-chef-of-sass-grumpy-cat-on-gravy-duty": {"rb": None, "kofi": None},
-    "2026-10-23-stuffing-critic-grumpy-goose-at-the-family-table": {"rb": None, "kofi": None},
-    "2026-10-23-nap-season-sleepy-harvest-owl-skips-the-pie": {"rb": None, "kofi": None},
+    "2026-10-23-sous-chef-of-sass-grumpy-cat-on-gravy-duty": {"rb": "https://www.redbubble.com/shop/ap/184979661", "kofi": None},
+    "2026-10-23-stuffing-critic-grumpy-goose-at-the-family-table": {"rb": "https://www.redbubble.com/shop/ap/184979714", "kofi": None},
+    "2026-10-23-nap-season-sleepy-harvest-owl-skips-the-pie": {"rb": "https://www.redbubble.com/shop/ap/184979754", "kofi": None},
 }
 for d in DESIGNS:
     if d["slug"] in URLS:
