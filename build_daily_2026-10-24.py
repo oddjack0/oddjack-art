@@ -43,9 +43,9 @@ DESIGNS = [
 
 # Filled in from the publisher run results (edit before re-running)
 URLS = {
-    "2026-10-24-i-brought-the-sides-grumpy-turkey-at-the-table": {"rb": None, "kofi": "https://ko-fi.com/s/aa0340f918"},
-    "2026-10-24-i-told-you-so-smug-crow-on-a-skull": {"rb": None, "kofi": "https://ko-fi.com/s/a992cd0cc5"},
-    "2026-10-24-plant-down-no-regrets-chaos-raccoon-on-the-loose": {"rb": None, "kofi": "https://ko-fi.com/s/beee578db9"},
+    "2026-10-24-i-brought-the-sides-grumpy-turkey-at-the-table": {"rb": "https://www.redbubble.com/shop/ap/185001228", "kofi": "https://ko-fi.com/s/aa0340f918"},
+    "2026-10-24-i-told-you-so-smug-crow-on-a-skull": {"rb": "https://www.redbubble.com/shop/ap/185001390", "kofi": "https://ko-fi.com/s/a992cd0cc5"},
+    "2026-10-24-plant-down-no-regrets-chaos-raccoon-on-the-loose": {"rb": "https://www.redbubble.com/shop/ap/185002140", "kofi": "https://ko-fi.com/s/beee578db9"},
 }
 for d in DESIGNS:
     if d["slug"] in URLS:
