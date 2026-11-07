@@ -16,7 +16,7 @@ if os.path.exists(os.path.join(ROOT, "sitemap.xml")):
     txt = open(os.path.join(ROOT, "sitemap.xml")).read()
     for m in re.finditer(r"<url><loc>([^<]+)</loc><lastmod>([^<]+)</lastmod>", txt):
         old[m.group(1)] = m.group(2)
-TODAY = "2026-11-04"
+TODAY = "2026-11-07"
 
 urls = []
 for dirpath, _dn, fn in sorted(os.walk(ROOT)):
