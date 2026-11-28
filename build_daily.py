@@ -63,7 +63,11 @@ def main():
         m = json.load(open(os.path.join(ddir, "metadata.json")))
         pngs = [f for f in os.listdir(ddir) if f.lower().endswith(".png")]
         assert pngs, f"no PNG in {ddir}"
-        src = os.path.join(ddir, sorted(pngs)[0])
+        # Prefer the final file named in metadata.json — the raw
+        # media-generation-* file sorts first alphabetically and is low-res
+        # with a baked-in background. Fall back to sorted order.
+        pick = m.get("filename") if m.get("filename") in pngs else sorted(pngs)[0]
+        src = os.path.join(ddir, pick)
         slug = f"{date}-{slugify(m['title'])}"
         u = urls.get(slug, {})
         designs.append({"title": m["title"], "slug": slug, "src": src,
